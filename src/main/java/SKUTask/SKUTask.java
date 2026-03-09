@@ -5,11 +5,13 @@ public class SKUTask {
     // private String description;
     private Priority priority;
     private String dueDate;
+    private boolean isDone;
 
     public SKUTask(String skuTaskID, Priority priority, String dueDate) {
         this.skuTaskID = skuTaskID;
         this.priority = priority;
         this.dueDate = dueDate;
+        this.isDone = false;
     }
 
     public SKUTask(String skuTaskID, String dueDate) {
@@ -28,8 +30,21 @@ public class SKUTask {
         return dueDate;
     }
 
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void mark() {
+        this.isDone = true;
+    }
+
+    public void unmark() {
+        this.isDone = false;
+    }
+
     @Override
     public String toString() {
-        return "ID: " + skuTaskID + " | Priority: " + priority + " | Due: " + dueDate;
+        String status = isDone ? "[X]" : "[ ]";
+        return status + " ID: " + skuTaskID + " | Priority: " + priority + " | Due: " + dueDate;
     }
 }

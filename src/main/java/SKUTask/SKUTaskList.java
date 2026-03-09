@@ -55,4 +55,12 @@ public class SKUTaskList {
             i++;
         }
     }
+
+    public void markTask(int taskIndex) {
+        skuTaskList.get(taskIndex - 1).mark();
+    }
+
+    public void unmarkTask(int taskIndex) {
+        skuTaskList.get(taskIndex - 1).unmark();
+    }
 }
