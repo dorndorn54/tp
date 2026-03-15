@@ -1,10 +1,25 @@
 package ui;
 
+import exception.InvalidCommandException;
+import exception.MissingArgumentException;
+
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Parses raw user input into structured commands.
+ */
 public class Parser {
-    public static ParsedCommand parse(String input){
+
+    /**
+     * Parses the raw user input string into a ParsedCommand.
+     *
+     * @param input The raw input string from the user.
+     * @return A ParsedCommand object containing the command word and flags.
+     * @throws InvalidCommandException If the command syntax is invalid.
+     * @throws MissingArgumentException If required arguments are missing from the input.
+     */
+    public static ParsedCommand parse(String input) throws InvalidCommandException, MissingArgumentException {
         assert input != null : "Input Should not be null";
 
         String trimmed = input.trim();
@@ -23,7 +38,14 @@ public class Parser {
         return new ParsedCommand(commandWord, args);
     }
 
-    private static Map<String, String> parseFlags(String argsString) {
+    /**
+     * Parses a string of flags into a key-value map.
+     *
+     * @param argsString The string containing flags and values.
+     * @return A map of flag keys to their respective values.
+     * @throws InvalidCommandException If the flag syntax is invalid.
+     */
+    private static Map<String, String> parseFlags(String argsString) throws InvalidCommandException {
         Map<String, String> args = new HashMap<>();
 
         // Split at boundaries like " n/" " p/" " d/" " l/" " i/"

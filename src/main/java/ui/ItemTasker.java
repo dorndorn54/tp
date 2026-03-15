@@ -1,5 +1,6 @@
 package ui;
 
+import exception.ItemTaskerException;
 import sku.Location;
 import sku.SKU;
 import sku.SKUList;
@@ -15,12 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Main entry-point for the java.duke.ItemTasker application.
+ */
 public class ItemTasker {
+
     /**
-     * Main entry-point for the java.duke.ItemTasker application.
+     * The main execution method for the application.
+     * * @param args Command line arguments.
+     * @throws ItemTaskerException If a top-level error occurs during execution.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ItemTaskerException {
         SKUList skuList = new SKUList();
         Ui ui = new Ui();
         CommandRunner runner = new CommandRunner(skuList);
