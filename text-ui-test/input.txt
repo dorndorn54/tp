@@ -1,0 +1,46 @@
+help
+
+addsku n/PALLET-A l/A1
+addsku n/PALLET-B l/B2
+addsku n/PALLET-C l/C3
+
+addsku n/PALLET-A l/C1
+addsku n/PALLET-D l/Z9
+addsku n/PALLET-E
+
+addskutask n/PALLET-A d/2026-04-01 p/HIGH
+addskutask n/PALLET-A d/2026-04-05 p/MEDIUM
+addskutask n/PALLET-B d/2026-04-10
+addskutask n/PALLET-C d/2026-04-15 p/LOW
+
+addskutask n/GHOST-SKU d/2026-04-01 p/HIGH
+addskutask n/PALLET-A d/2026-04-01 p/URGENT
+addskutask n/PALLET-A
+
+marktask n/PALLET-A i/1
+marktask n/PALLET-B i/1
+unmarktask n/PALLET-A i/1
+
+marktask n/PALLET-A i/99
+marktask n/GHOST-SKU i/1
+marktask n/PALLET-A i/abc
+
+listtasks
+listtasks n/PALLET-A
+listtasks p/HIGH
+listtasks p/LOW
+listtasks l/A1
+listtasks l/C3
+
+listtasks p/CRITICAL
+listtasks l/Z9
+listtasks n/GHOST-SKU
+
+deletetask n/PALLET-A i/2
+deletetask n/PALLET-A i/99
+deletesku n/PALLET-B
+deletesku n/GHOST-SKU
+
+listtasks
+
+bye
