@@ -2,7 +2,8 @@ package ui;
 
 import org.junit.jupiter.api.Test;
 import skutask.SKUTask;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SKUTaskMarkUnmarkTest {
 

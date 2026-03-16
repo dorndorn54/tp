@@ -16,7 +16,6 @@ import sku.SKUList;
 import skutask.Priority;
 import skutask.SKUTask;
 import skutask.SKUTaskList;
-import skutask.ViewSKUTask;
 
 import java.util.ArrayList;
 import java.util.Comparator;
