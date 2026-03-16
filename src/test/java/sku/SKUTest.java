@@ -10,7 +10,7 @@ class SKUTest {
 
     @Test
     public void constructor_validInputs_correctlyInitialized() {
-            SKU sku = new SKU("ITEM-001", Location.A1);
+        SKU sku = new SKU("ITEM-001", Location.A1);
 
         assertEquals("ITEM-001", sku.getSKUID());
         assertEquals(Location.A1, sku.getSKULocation());
