@@ -75,6 +75,7 @@ public class SKUTask {
      * Marks this task as done.
      */
     public void mark() {
+        assert !isDone : "Task is already marked as done.";
         this.isDone = true;
     }
 
@@ -82,6 +83,7 @@ public class SKUTask {
      * Marks this task as not done.
      */
     public void unmark() {
+        assert isDone : "Task is already marked as not done.";
         this.isDone = false;
     }
 
