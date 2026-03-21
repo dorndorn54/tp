@@ -1,11 +1,9 @@
 package skutask;
 
-
 import sku.SKU;
 import sku.SKUList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Comparator;
@@ -24,14 +22,15 @@ public class ViewSKUTask {
      * Filters are applied in a specific order: SKU ID takes precedence, followed by Priority,
      * then Location-based distance sorting.
      *
-     * @param fullList The master list of all SKUs in the system used for location lookups.
-     * @param taskMap  A mapping of SKU IDs to their respective lists of tasks.
+     * @param fullList The master list of all SKUs in the system.
      * @return A filtered or sorted list of {@code SKUTask} objects.
      */
-    public List<SKUTask> listTasks(SKUList fullList, HashMap<String, SKUTaskList> taskMap) {
+    public List<SKUTask> listTasks(SKUList fullList) {
         List<SKUTask> allTasks = new ArrayList<>();
-        for (SKUTaskList taskList : taskMap.values()) {
-            allTasks.addAll(taskList.getSKUTaskList());
+
+        // ARCHITECTURE FIX: Extract all tasks directly from the encapsulated SKU objects
+        for (SKU sku : fullList.getSKUList()) {
+            allTasks.addAll(sku.getSKUTaskList().getSKUTaskList());
         }
 
         List<SKUTask> result;

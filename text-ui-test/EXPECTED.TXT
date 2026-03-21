@@ -52,19 +52,19 @@ __________________________________________________________________________
 >  [OK] Marked task #1 as done for SKU [PALLET-B].
 >  [OK] Unmarked task #1 for SKU [PALLET-A].
 > >  [ERROR] Task index 99 is out of range for SKU: PALLET-A
->  [ERROR] Task index 1 is out of range for SKU: GHOST-SKU
+>  [ERROR] SKU not found: GHOST-SKU
 >  [ERROR] Task index must be a number, got: 'abc'
 > >  All tasks:
 __________________________________________________________________________
- SKU [PALLET-C]:
-1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
- SKU [PALLET-D]:
-   No tasks for this SKU.
  SKU [PALLET-A]:
 1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
 2. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05
  SKU [PALLET-B]:
 1. [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10
+ SKU [PALLET-C]:
+1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
+ SKU [PALLET-D]:
+   No tasks for this SKU.
 __________________________________________________________________________
 >  Tasks for SKU [PALLET-A]:
 __________________________________________________________________________
@@ -103,12 +103,12 @@ __________________________________________________________________________
 >  [ERROR] SKU not found: GHOST-SKU
 > >  All tasks:
 __________________________________________________________________________
+ SKU [PALLET-A]:
+1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
  SKU [PALLET-C]:
 1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
  SKU [PALLET-D]:
    No tasks for this SKU.
- SKU [PALLET-A]:
-1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
 __________________________________________________________________________
 > > __________________________________________________________________________
  Goodbye! All tasks have been saved.
