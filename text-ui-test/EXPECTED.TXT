@@ -29,8 +29,9 @@ __________________________________________________________________________
    listtasks                           List all tasks.
 
  OTHER
-   help                                Show this help message.
-   bye / exit                          Exit ItemTasker.
+   export                             Export inventory to a readable text file.
+   help                               Show this help message.
+   bye / exit                         Exit ItemTasker.
 __________________________________________________________________________
  Locations: A1 A2 A3 | B1 B2 B3 | C1 C2 C3  (3x3 warehouse grid)
 __________________________________________________________________________
