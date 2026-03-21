@@ -1,5 +1,6 @@
 package ui;
 
+import command.ParsedCommand;
 import exception.InvalidCommandException;
 import exception.MissingArgumentException;
 

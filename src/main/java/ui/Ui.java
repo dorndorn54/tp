@@ -106,8 +106,9 @@ public class Ui {
         System.out.println("   listtasks                           List all tasks.");
         System.out.println();
         System.out.println(" OTHER");
-        System.out.println("   help                                Show this help message.");
-        System.out.println("   bye / exit                          Exit ItemTasker.");
+        System.out.println("   export                             Export inventory to a readable text file.");
+        System.out.println("   help                               Show this help message.");
+        System.out.println("   bye / exit                         Exit ItemTasker.");
         System.out.println(DIVIDER);
         System.out.println(" Locations: A1 A2 A3 | B1 B2 B3 | C1 C2 C3  (3x3 warehouse grid)");
         System.out.println(DIVIDER);

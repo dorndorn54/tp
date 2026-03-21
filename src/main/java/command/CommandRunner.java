@@ -1,4 +1,4 @@
-package ui;
+package command;
 
 import exception.EmptyListException;
 import exception.InvalidCommandException;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import storage.Storage;
+import ui.Ui;
 
 /**
  * Receives parsed commands from the user input and routes them to specific
@@ -62,6 +63,7 @@ public class CommandRunner {
      *
      * @param cmd The parsed command object containing the command word and extracted arguments.
      * @throws ItemTaskerException If a domain-specific error occurs during execution.
+     * @throws IOException If an error occurs during state saving upon exit.
      */
     public void run(ParsedCommand cmd) throws ItemTaskerException, IOException {
         assert cmd != null : "ParsedCommand should not be null";
@@ -88,6 +90,9 @@ public class CommandRunner {
         case "listtasks":
             handleListTasks(cmd);
             break;
+        case "export":
+            handleExport();
+            break;
         case "help":
             Ui.printHelp();
             break;
@@ -108,6 +113,12 @@ public class CommandRunner {
         }
     }
 
+    /**
+     * Parses arguments and adds a new SKU to the warehouse.
+     *
+     * @param cmd The parsed command containing the SKU ID and location.
+     * @throws SKUNotFoundException If an issue related to finding the SKU occurs during validation.
+     */
     private void handleAddSku(ParsedCommand cmd) throws SKUNotFoundException {
         String skuId = cmd.getArg("n");
         String locationStr = cmd.getArg("l");
@@ -134,6 +145,13 @@ public class CommandRunner {
         Ui.printSuccess("Added SKU [" + skuId.toUpperCase() + "] at location " + location);
     }
 
+    /**
+     * Parses arguments and deletes an existing SKU from the warehouse.
+     *
+     * @param cmd The parsed command containing the SKU ID to delete.
+     * @throws MissingArgumentException If the SKU ID is not provided.
+     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     */
     private void handleDeleteSku(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException {
         String skuId = cmd.getArg("n");
         if (skuId == null) {
@@ -149,6 +167,13 @@ public class CommandRunner {
         Ui.printSuccess("Deleted SKU [" + skuId.toUpperCase() + "] and all its tasks.");
     }
 
+    /**
+     * Parses arguments and adds a new task to a specific SKU.
+     *
+     * @param cmd The parsed command containing the SKU ID, due date, and optional priority.
+     * @throws MissingArgumentException If required arguments (SKU ID or due date) are missing.
+     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     */
     private void handleAddSkuTask(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException {
         String skuId = cmd.getArg("n");
         String dueDate = cmd.getArg("d");
@@ -182,6 +207,13 @@ public class CommandRunner {
                 + "] | Priority: " + priority + " | Due: " + dueDate);
     }
 
+    /**
+     * Parses arguments and deletes a specific task from an SKU based on its index.
+     *
+     * @param cmd The parsed command containing the SKU ID and the task index.
+     * @throws InvalidIndexException If the provided index is out of bounds or not a number.
+     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     */
     private void handleDeleteTask(ParsedCommand cmd) throws InvalidIndexException, SKUNotFoundException {
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -212,6 +244,13 @@ public class CommandRunner {
         Ui.printSuccess("Deleted task #" + index + " from SKU [" + skuId.toUpperCase() + "].");
     }
 
+    /**
+     * Parses arguments and marks a specific task as done.
+     *
+     * @param cmd The parsed command containing the SKU ID and the task index.
+     * @throws MissingArgumentException If required arguments are missing.
+     * @throws InvalidIndexException If the provided index is out of bounds or not a number.
+     */
     private void handleMarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException {
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -242,6 +281,13 @@ public class CommandRunner {
         Ui.printSuccess("Marked task #" + index + " as done for SKU [" + skuId.toUpperCase() + "].");
     }
 
+    /**
+     * Parses arguments and unmarks a completed task.
+     *
+     * @param cmd The parsed command containing the SKU ID and the task index.
+     * @throws MissingArgumentException If required arguments are missing.
+     * @throws InvalidIndexException If the provided index is out of bounds or not a number.
+     */
     private void handleUnmarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException {
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -272,6 +318,14 @@ public class CommandRunner {
         Ui.printSuccess("Unmarked task #" + index + " for SKU [" + skuId.toUpperCase() + "].");
     }
 
+    /**
+     * Parses arguments and displays a filtered or sorted list of tasks.
+     *
+     * @param cmd The parsed command containing optional filter arguments (SKU, priority, or location).
+     * @throws InvalidCommandException If the command format is fundamentally invalid.
+     * @throws EmptyListException If the system is queried but currently tracks no tasks.
+     * @throws SKUNotFoundException If a specific SKU filter is applied but the SKU does not exist.
+     */
     private void handleListTasks(ParsedCommand cmd) throws InvalidCommandException, EmptyListException,
             SKUNotFoundException {
         ViewSKUTask viewer = new ViewSKUTask();
@@ -360,10 +414,21 @@ public class CommandRunner {
         }
     }
 
+    /**
+     * Serializes the current application state to JSON storage.
+     *
+     * @throws IOException If an error occurs during file writing.
+     */
     private void saveState() throws IOException {
         Storage.saveState(this.skuList);
     }
 
+    /**
+     * Searches for a specific SKU object in the warehouse by its ID.
+     *
+     * @param skuId The alphanumeric string identifying the SKU.
+     * @return The matching SKU object, or null if no match is found.
+     */
     private SKU findSku(String skuId) {
         for (SKU sku : skuList.getSKUList()) {
             if (sku.getSKUID().equalsIgnoreCase(skuId)) {
@@ -373,12 +438,31 @@ public class CommandRunner {
         return null;
     }
 
+    /**
+     * Parses a string input into a numeric integer index.
+     *
+     * @param indexStr The raw string input provided by the user.
+     * @return The parsed integer index, or -1 if the input is not a valid integer.
+     * @throws InvalidIndexException If the string fails to parse (handled internally to print an error).
+     */
     private int parseIndex(String indexStr) throws InvalidIndexException {
         try {
             return Integer.parseInt(indexStr.trim());
         } catch (NumberFormatException e) {
             Ui.printError("Task index must be a number, got: '" + indexStr + "'");
             return -1;
+        }
+    }
+
+    /**
+     * Initiates the export of the system's inventory to a readable text file.
+     */
+    private void handleExport() {
+        try {
+            storage.Export.exportToTextFile(this.skuList);
+            Ui.printSuccess("Warehouse state successfully exported to Data/ItemTasker_Export.txt");
+        } catch (IOException e) {
+            Ui.printError("Failed to export data: " + e.getMessage());
         }
     }
 }
