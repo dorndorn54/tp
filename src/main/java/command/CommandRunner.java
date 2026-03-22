@@ -1,26 +1,18 @@
 package command;
 
-import exception.EmptyListException;
-import exception.InvalidCommandException;
-import exception.InvalidIndexException;
-import exception.ItemTaskerException;
-import exception.MissingArgumentException;
-import exception.SKUNotFoundException;
-
+import exception.*;
 import sku.Location;
 import sku.SKU;
 import sku.SKUList;
-
 import skutask.Priority;
 import skutask.SKUTask;
 import skutask.SKUTaskList;
 import skutask.ViewSKUTask;
+import storage.Storage;
+import ui.Ui;
 
 import java.io.IOException;
 import java.util.List;
-
-import storage.Storage;
-import ui.Ui;
 
 /**
  * Receives parsed commands from the user input and routes them to specific
@@ -283,6 +275,12 @@ public class CommandRunner {
             throw new InvalidIndexException(index, skuId);
         }
 
+        SKUTask task = taskList.getSKUTaskList().get(index - 1);
+        if (task.isDone()) {
+            Ui.printInfo("Task #" + index + " for SKU [" + skuId.toUpperCase() + "] is already marked as done.");
+            return;
+        }
+
         taskList.markTask(index);
         Ui.printSuccess("Marked task #" + index + " as done for SKU [" + skuId.toUpperCase() + "].");
     }
@@ -317,6 +315,12 @@ public class CommandRunner {
         SKUTaskList taskList = targetSku.getSKUTaskList();
         if (index < 1 || index > taskList.getSize()) {
             throw new InvalidIndexException(index, skuId);
+        }
+
+        SKUTask task = taskList.getSKUTaskList().get(index - 1);
+        if (!task.isDone()) {
+            Ui.printInfo("Task #" + index + " for SKU [" + skuId.toUpperCase() + "] is already unmarked.");
+            return;
         }
 
         taskList.unmarkTask(index);

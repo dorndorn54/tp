@@ -53,6 +53,8 @@ __________________________________________________________________________
 > >  [OK] Marked task #1 as done for SKU [PALLET-A].
 >  [OK] Marked task #1 as done for SKU [PALLET-B].
 >  [OK] Unmarked task #1 for SKU [PALLET-A].
+>  [INFO] Task #1 for SKU [PALLET-B] is already marked as done.
+>  [INFO] Task #1 for SKU [PALLET-A] is already unmarked.
 > >  [ERROR] Task index 99 is out of range for SKU: PALLET-A
 >  [ERROR] SKU not found: GHOST-SKU
 >  [ERROR] Task index must be a number, got: 'abc'

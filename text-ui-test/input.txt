@@ -21,6 +21,8 @@ addskutask n/PALLET-A
 marktask n/PALLET-A i/1
 marktask n/PALLET-B i/1
 unmarktask n/PALLET-A i/1
+marktask n/PALLET-B i/1
+unmarktask n/PALLET-A i/1
 
 marktask n/PALLET-A i/99
 marktask n/GHOST-SKU i/1
