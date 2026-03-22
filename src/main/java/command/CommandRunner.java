@@ -62,8 +62,8 @@ public class CommandRunner {
      * command word.
      *
      * @param cmd The parsed command object containing the command word and extracted arguments.
-     * @throws ItemTaskerException If a domain-specific error occurs during execution.
-     * @throws IOException If an error occurs during state saving upon exit.
+     * @throws ItemTaskerException If a domain-specific error occurs duringexecution.
+     * @throws IOException         If an error occurs during state saving upon exit.
      */
     public void run(ParsedCommand cmd) throws ItemTaskerException, IOException {
         assert cmd != null : "ParsedCommand should not be null";
@@ -89,6 +89,9 @@ public class CommandRunner {
             break;
         case "listtasks":
             handleListTasks(cmd);
+            break;
+        case "find":
+            handleFind(cmd);
             break;
         case "export":
             handleExport();
@@ -150,7 +153,7 @@ public class CommandRunner {
      *
      * @param cmd The parsed command containing the SKU ID to delete.
      * @throws MissingArgumentException If the SKU ID is not provided.
-     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     * @throws SKUNotFoundException     If the specified SKU does not exist in the warehouse.
      */
     private void handleDeleteSku(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException {
         String skuId = cmd.getArg("n");
@@ -172,14 +175,14 @@ public class CommandRunner {
      *
      * @param cmd The parsed command containing the SKU ID, due date, and optional priority.
      * @throws MissingArgumentException If required arguments (SKU ID or due date) are missing.
-     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     * @throws SKUNotFoundException     If the specified SKU does not exist in the warehouse.
      */
     private void handleAddSkuTask(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException {
         String skuId = cmd.getArg("n");
         String dueDate = cmd.getArg("d");
 
         if (skuId == null || dueDate == null) {
-            Ui.printError("Usage: addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY]");
+            Ui.printError("Usage: addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY] [t/DESCRIPTION]");
             return;
         }
 
@@ -199,12 +202,16 @@ public class CommandRunner {
             }
         }
 
+        String description = cmd.hasArg("t") ? cmd.getArg("t") : "";
+
         SKUTaskList taskList = targetSku.getSKUTaskList();
-        taskList.addSKUTask(skuId.toUpperCase(), priority, dueDate);
+        taskList.addSKUTask(skuId.toUpperCase(), priority, dueDate, description);
         int newIndex = taskList.getSize();
 
-        Ui.printSuccess("Added task #" + newIndex + " to SKU [" + skuId.toUpperCase()
-                + "] | Priority: " + priority + " | Due: " + dueDate);
+        Ui.printSuccess("Added task #" + newIndex +
+                " to SKU [" + skuId.toUpperCase() + "] | Priority: "
+                + priority + " | Due: " + dueDate
+                + (description.isEmpty() ? "" : " | Desc: " + description));
     }
 
     /**
@@ -212,7 +219,7 @@ public class CommandRunner {
      *
      * @param cmd The parsed command containing the SKU ID and the task index.
      * @throws InvalidIndexException If the provided index is out of bounds or not a number.
-     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     * @throws SKUNotFoundException  If the specified SKU does not exist in the warehouse.
      */
     private void handleDeleteTask(ParsedCommand cmd) throws InvalidIndexException, SKUNotFoundException {
         String skuId = cmd.getArg("n");
@@ -249,7 +256,7 @@ public class CommandRunner {
      *
      * @param cmd The parsed command containing the SKU ID and the task index.
      * @throws MissingArgumentException If required arguments are missing.
-     * @throws InvalidIndexException If the provided index is out of bounds or not a number.
+     * @throws InvalidIndexException    If the provided index is out of bounds or not a number.
      */
     private void handleMarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException {
         String skuId = cmd.getArg("n");
@@ -273,8 +280,7 @@ public class CommandRunner {
 
         SKUTaskList taskList = targetSku.getSKUTaskList();
         if (index < 1 || index > taskList.getSize()) {
-            Ui.printError("Task index " + index + " is out of range for SKU: " + skuId);
-            return;
+            throw new InvalidIndexException(index, skuId);
         }
 
         taskList.markTask(index);
@@ -286,7 +292,7 @@ public class CommandRunner {
      *
      * @param cmd The parsed command containing the SKU ID and the task index.
      * @throws MissingArgumentException If required arguments are missing.
-     * @throws InvalidIndexException If the provided index is out of bounds or not a number.
+     * @throws InvalidIndexException    If the provided index is out of bounds or not a number.
      */
     private void handleUnmarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException {
         String skuId = cmd.getArg("n");
@@ -310,8 +316,7 @@ public class CommandRunner {
 
         SKUTaskList taskList = targetSku.getSKUTaskList();
         if (index < 1 || index > taskList.getSize()) {
-            Ui.printError("Task index " + index + " is out of range for SKU: " + skuId);
-            return;
+            throw new InvalidIndexException(index, skuId);
         }
 
         taskList.unmarkTask(index);
@@ -323,8 +328,8 @@ public class CommandRunner {
      *
      * @param cmd The parsed command containing optional filter arguments (SKU, priority, or location).
      * @throws InvalidCommandException If the command format is fundamentally invalid.
-     * @throws EmptyListException If the system is queried but currently tracks no tasks.
-     * @throws SKUNotFoundException If a specific SKU filter is applied but the SKU does not exist.
+     * @throws EmptyListException      If the system is queried but currently tracks no tasks.
+     * @throws SKUNotFoundException    If a specific SKU filter is applied but the SKU does not exist.
      */
     private void handleListTasks(ParsedCommand cmd) throws InvalidCommandException, EmptyListException,
             SKUNotFoundException {
@@ -436,6 +441,101 @@ public class CommandRunner {
             }
         }
         return null;
+    }
+
+    /**
+     * Handles the 'find' command with combinable filters.
+     * Supports optional flags: n/SKU_ID, t/DESCRIPTION, i/TASK_INDEX.
+     * All flags can be combined to narrow down results.
+     *
+     * @param cmd The parsed command containing the filter flags.
+     * @throws MissingArgumentException If no filter flags are provided.
+     * @throws SKUNotFoundException     If the specified SKU does not exist in the warehouse.
+     * @throws InvalidIndexException    If the task index is not a valid number or is out of range.
+     */
+    private void handleFind(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException,
+            InvalidIndexException {
+        String skuFilter = cmd.getArg("n");
+        String descFilter = cmd.getArg("t");
+        String indexStr = cmd.getArg("i");
+
+        if (skuFilter == null && descFilter == null && indexStr == null) {
+            throw new MissingArgumentException("Usage: find [n/SKU_ID] [t/DESCRIPTION] [i/TASK_INDEX]");
+        }
+
+        if (skuFilter != null && findSku(skuFilter) == null) {
+            throw new SKUNotFoundException(skuFilter);
+        }
+
+        int taskIndex = -1;
+        if (indexStr != null) {
+            taskIndex = parseIndex(indexStr);
+            if (taskIndex == -1) {
+                return;
+            }
+        }
+
+        boolean found = false;
+        System.out.println(" Search results:");
+        Ui.printDivider();
+
+        for (SKU sku : skuList.getSKUList()) {
+            // If n/ filter is given, skip non-matching SKUs
+            if (skuFilter != null && !sku.getSKUID().equalsIgnoreCase(skuFilter)) {
+                continue;
+            }
+
+            SKUTaskList taskList = sku.getSKUTaskList();
+            java.util.ArrayList<SKUTask> tasks = taskList.getSKUTaskList();
+
+            // If i/ filter is given, only look at that specific index
+            if (taskIndex > 0) {
+                if (taskIndex > tasks.size()) {
+                    if (skuFilter != null) {
+                        throw new InvalidIndexException(taskIndex, sku.getSKUID());
+                    }
+                    continue;
+                }
+                SKUTask task = tasks.get(taskIndex - 1);
+                if (matchesDescription(task, descFilter)) {
+                    System.out.println("  [SKU: " + sku.getSKUID().toUpperCase() + "] #" + taskIndex + ". " + task);
+                    found = true;
+                }
+            } else {
+                // Search all tasks in this SKU
+                for (int i = 0; i < tasks.size(); i++) {
+                    SKUTask task = tasks.get(i);
+                    if (matchesDescription(task, descFilter)) {
+                        System.out.println("  [SKU: " + sku.getSKUID().toUpperCase() + "] #" + (i + 1) + ". " + task);
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        if (!found) {
+            Ui.printInfo("No matching tasks found.");
+        }
+        Ui.printDivider();
+    }
+
+    /**
+     * Checks if a task's description contains the given keyword (case-insensitive).
+     * Returns true if no description filter is specified.
+     *
+     * @param task       The task to check.
+     * @param descFilter The keyword to search for, or null to match all.
+     * @return True if the task matches the filter.
+     */
+    private boolean matchesDescription(SKUTask task, String descFilter) {
+        if (descFilter == null) {
+            return true;
+        }
+        String desc = task.getSKUTaskDescription();
+        if (desc == null) {
+            return false;
+        }
+        return desc.toLowerCase().contains(descFilter.toLowerCase());
     }
 
     /**

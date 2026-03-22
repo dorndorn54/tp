@@ -9,30 +9,66 @@ public class SKUTask {
     private Priority priority;
     private String dueDate;
     private boolean isDone;
+    private String taskDescription;
+
+    /**
+     * Constructs a new SKUTask with the specified ID, priority, due date, and description.
+     *
+     * @param skuTaskID       The unique identifier for this task.
+     * @param priority        The priority level of this task.
+     * @param dueDate         The due date of this task.
+     * @param taskDescription A text description of what this task involves.
+     */
+    public SKUTask(String skuTaskID, Priority priority, String dueDate, String taskDescription) {
+        this.skuTaskID = skuTaskID;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.isDone = false;
+        this.taskDescription = taskDescription;
+    }
 
     /**
      * Constructs a new SKUTask with the specified ID, priority, and due date.
+     * Description defaults to empty.
      *
      * @param skuTaskID The unique identifier for this task.
      * @param priority  The priority level of this task.
      * @param dueDate   The due date of this task.
      */
     public SKUTask(String skuTaskID, Priority priority, String dueDate) {
-        this.skuTaskID = skuTaskID;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.isDone = false;
+        this(skuTaskID, priority, dueDate, "");
+    }
+
+    /**
+     * Constructs a new SKUTask with the specified ID, due date, and description.
+     * Priority defaults to HIGH.
+     *
+     * @param skuTaskID       The unique identifier for this task.
+     * @param dueDate         The due date of this task.
+     * @param taskDescription A text description of what this task involves.
+     */
+    public SKUTask(String skuTaskID, String dueDate, String taskDescription) {
+        this(skuTaskID, Priority.HIGH, dueDate, taskDescription);
     }
 
     /**
      * Constructs a new SKUTask with the specified ID and due date.
-     * Priority defaults to HIGH.
+     * Priority defaults to HIGH. Description defaults to empty.
      *
      * @param skuTaskID The unique identifier for this task.
      * @param dueDate   The due date of this task.
      */
     public SKUTask(String skuTaskID, String dueDate) {
-        this(skuTaskID, Priority.HIGH, dueDate);
+        this(skuTaskID, Priority.HIGH, dueDate, "");
+    }
+
+    /**
+     * Returns the description of this task.
+     *
+     * @return The task description.
+     */
+    public String getSKUTaskDescription() {
+        return taskDescription;
     }
 
     /**
@@ -95,6 +131,8 @@ public class SKUTask {
     @Override
     public String toString() {
         String status = isDone ? "[X]" : "[ ]";
-        return status + " ID: " + skuTaskID + " | Priority: " + priority + " | Due: " + dueDate;
+        String desc = (taskDescription != null && !taskDescription.isEmpty())
+                ? " | Desc: " + taskDescription : "";
+        return status + " ID: " + skuTaskID + " | Priority: " + priority + " | Due: " + dueDate + desc;
     }
 }

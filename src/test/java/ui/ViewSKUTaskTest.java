@@ -27,13 +27,13 @@ class ViewSKUTaskTest {
         // Setup Pallet A at A1 (0,0) with 2 tasks directly inside the SKU
         skuList.addSKU("PALLET-A", Location.A1);
         SKU palletA = skuList.getSKUList().get(0);
-        palletA.getSKUTaskList().addSKUTask("PALLET-A", Priority.HIGH, "2026-04-01");
-        palletA.getSKUTaskList().addSKUTask("PALLET-A", Priority.MEDIUM, "2026-04-05");
+        palletA.getSKUTaskList().addSKUTask("PALLET-A", Priority.HIGH, "2026-04-01", "high priority task");
+        palletA.getSKUTaskList().addSKUTask("PALLET-A", Priority.MEDIUM, "2026-04-05", "medium priority task");
 
         // Setup Pallet B at B1 (1,0) with 1 task directly inside the SKU
         skuList.addSKU("PALLET-B", Location.B1);
         SKU palletB = skuList.getSKUList().get(1);
-        palletB.getSKUTaskList().addSKUTask("PALLET-B", Priority.HIGH, "2026-04-10");
+        palletB.getSKUTaskList().addSKUTask("PALLET-B", Priority.HIGH, "2026-04-10", "pallet b task");
     }
 
     @Test

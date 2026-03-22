@@ -35,27 +35,52 @@ public class SKUTaskList {
     }
 
     /**
+     * Adds a new task with the specified SKU ID, priority, due date, and description.
+     *
+     * @param skuID       The SKU identifier for the task.
+     * @param priority    The priority level of the task.
+     * @param dueDate     The due date of the task.
+     * @param description A text description of what this task involves.
+     */
+    public void addSKUTask(String skuID, Priority priority, String dueDate, String description) {
+        SKUTask newTask = new SKUTask(skuID, priority, dueDate, description);
+        skuTaskList.add(newTask);
+    }
+
+    /**
      * Adds a new task with the specified SKU ID, priority, and due date.
+     * Description defaults to empty.
      *
      * @param skuID    The SKU identifier for the task.
      * @param priority The priority level of the task.
      * @param dueDate  The due date of the task.
      */
     public void addSKUTask(String skuID, Priority priority, String dueDate) {
-        SKUTask newTask = new SKUTask(skuID, priority, dueDate);
-        skuTaskList.add(newTask);
+        addSKUTask(skuID, priority, dueDate, "");
+    }
+
+    /**
+     * Adds a new task with the specified SKU ID, due date, and description.
+     * Priority defaults to HIGH.
+     *
+     * @param skuID       The SKU identifier for the task.
+     * @param dueDate     The due date of the task.
+     * @param description A text description of what this task involves.
+     */
+    public void addSKUTask(String skuID, String dueDate, String description) {
+        SKUTask newSkuTask = new SKUTask(skuID, dueDate, description);
+        skuTaskList.add(newSkuTask);
     }
 
     /**
      * Adds a new task with the specified SKU ID and due date.
-     * Priority defaults to HIGH.
+     * Priority defaults to HIGH. Description defaults to empty.
      *
      * @param skuID   The SKU identifier for the task.
      * @param dueDate The due date of the task.
      */
     public void addSKUTask(String skuID, String dueDate) {
-        SKUTask newSkuTask = new SKUTask(skuID, dueDate);
-        skuTaskList.add(newSkuTask);
+        addSKUTask(skuID, dueDate, "");
     }
 
     /**

@@ -17,16 +17,17 @@ __________________________________________________________________________
 
  TASK MANAGEMENT
    addskutask n/SKU_ID d/DUE_DATE      Add a HIGH priority task (default).
-         [p/PRIORITY]                  Optional: HIGH, MEDIUM, or LOW.
+         [p/PRIORITY] [t/DESC]         Optional: priority and description.
    deletetask n/SKU_ID i/TASK_INDEX    Delete task at given index.
    marktask n/SKU_ID i/TASK_INDEX      Mark a task as completed.
    unmarktask n/SKU_ID i/TASK_INDEX    Unmark a completed task.
 
  VIEWING
+   listtasks                           List all tasks.
    listtasks n/SKU_ID                  List tasks for a specific SKU.
    listtasks p/PRIORITY                List tasks filtered by priority.
    listtasks l/LOCATION                List tasks sorted by distance.
-   listtasks                           List all tasks.
+   find [n/SKU_ID] [t/DESC] [i/INDEX]  Search tasks by SKU, description, index.
 
  OTHER
    export                             Export inventory to a readable text file.
@@ -42,13 +43,13 @@ __________________________________________________________________________
 > >  [ERROR] SKU already exists: PALLET-A
 >  [ERROR] Invalid location 'Z9'. Must be one of: A1 A2 A3 B1 B2 B3 C1 C2 C3
 >  [ERROR] Usage: addsku n/SKU_ID l/LOCATION  (e.g. addsku n/WIDGET-A1 l/B2)
-> >  [OK] Added task #1 to SKU [PALLET-A] | Priority: HIGH | Due: 2026-04-01
->  [OK] Added task #2 to SKU [PALLET-A] | Priority: MEDIUM | Due: 2026-04-05
->  [OK] Added task #1 to SKU [PALLET-B] | Priority: HIGH | Due: 2026-04-10
->  [OK] Added task #1 to SKU [PALLET-C] | Priority: LOW | Due: 2026-04-15
+> >  [OK] Added task #1 to SKU [PALLET-A] | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+>  [OK] Added task #2 to SKU [PALLET-A] | Priority: MEDIUM | Due: 2026-04-05 | Desc: count inventory
+>  [OK] Added task #1 to SKU [PALLET-B] | Priority: HIGH | Due: 2026-04-10 | Desc: ship out
+>  [OK] Added task #1 to SKU [PALLET-C] | Priority: LOW | Due: 2026-04-15 | Desc: inspect pallets
 > >  [ERROR] SKU not found: GHOST-SKU. Use 'addsku' to register it first.
 >  [ERROR] Invalid priority 'URGENT'. Use HIGH, MEDIUM, or LOW.
->  [ERROR] Usage: addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY]
+>  [ERROR] Usage: addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY] [t/DESCRIPTION]
 > >  [OK] Marked task #1 as done for SKU [PALLET-A].
 >  [OK] Marked task #1 as done for SKU [PALLET-B].
 >  [OK] Unmarked task #1 for SKU [PALLET-A].
@@ -58,46 +59,67 @@ __________________________________________________________________________
 > >  All tasks:
 __________________________________________________________________________
  SKU [PALLET-A]:
-1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
-2. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05
+1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+2. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05 | Desc: count inventory
  SKU [PALLET-B]:
-1. [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10
+1. [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10 | Desc: ship out
  SKU [PALLET-C]:
-1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
+1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15 | Desc: inspect pallets
  SKU [PALLET-D]:
    No tasks for this SKU.
 __________________________________________________________________________
 >  Tasks for SKU [PALLET-A]:
 __________________________________________________________________________
-1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
-2. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05
+1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+2. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05 | Desc: count inventory
 __________________________________________________________________________
 >  Tasks with priority [HIGH]:
 __________________________________________________________________________
-  [SKU: PALLET-A] [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
-  [SKU: PALLET-B] [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10
+  [SKU: PALLET-A] [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+  [SKU: PALLET-B] [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10 | Desc: ship out
 __________________________________________________________________________
 >  Tasks with priority [LOW]:
 __________________________________________________________________________
-  [SKU: PALLET-C] [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
+  [SKU: PALLET-C] [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15 | Desc: inspect pallets
 __________________________________________________________________________
 >  Tasks sorted by distance from [A1]:
 __________________________________________________________________________
-  [SKU: PALLET-A                  | dist=0 ] [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
-  [SKU: PALLET-A                  | dist=0 ] [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05
-  [SKU: PALLET-B                  | dist=2 ] [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10
-  [SKU: PALLET-C                  | dist=4 ] [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
+  [SKU: PALLET-A                  | dist=0 ] [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+  [SKU: PALLET-A                  | dist=0 ] [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05 | Desc: count inventory
+  [SKU: PALLET-B                  | dist=2 ] [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10 | Desc: ship out
+  [SKU: PALLET-C                  | dist=4 ] [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15 | Desc: inspect pallets
 __________________________________________________________________________
 >  Tasks sorted by distance from [C3]:
 __________________________________________________________________________
-  [SKU: PALLET-C                  | dist=0 ] [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
-  [SKU: PALLET-B                  | dist=2 ] [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10
-  [SKU: PALLET-A                  | dist=4 ] [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
-  [SKU: PALLET-A                  | dist=4 ] [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05
+  [SKU: PALLET-C                  | dist=0 ] [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15 | Desc: inspect pallets
+  [SKU: PALLET-B                  | dist=2 ] [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10 | Desc: ship out
+  [SKU: PALLET-A                  | dist=4 ] [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+  [SKU: PALLET-A                  | dist=4 ] [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05 | Desc: count inventory
 __________________________________________________________________________
 > >  [ERROR] Invalid priority 'CRITICAL'. Use HIGH, MEDIUM, or LOW.
 >  [ERROR] Invalid location 'Z9'. Must be one of: A1 A2 A3 B1 B2 B3 C1 C2 C3
 >  [INFO] No tasks found for SKU: GHOST-SKU
+> >  Search results:
+__________________________________________________________________________
+  [SKU: PALLET-A] #1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+  [SKU: PALLET-A] #2. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-04-05 | Desc: count inventory
+__________________________________________________________________________
+>  Search results:
+__________________________________________________________________________
+  [SKU: PALLET-A] #1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
+__________________________________________________________________________
+>  Search results:
+__________________________________________________________________________
+  [SKU: PALLET-B] #1. [X] ID: PALLET-B | Priority: HIGH | Due: 2026-04-10 | Desc: ship out
+__________________________________________________________________________
+>  Search results:
+__________________________________________________________________________
+ [INFO] No matching tasks found.
+__________________________________________________________________________
+>  Search results:
+__________________________________________________________________________
+ [ERROR] Task index 99 is out of range for SKU: PALLET-A
+>  [ERROR] Usage: find [n/SKU_ID] [t/DESCRIPTION] [i/TASK_INDEX]
 > >  [OK] Deleted task #2 from SKU [PALLET-A].
 >  [ERROR] Task index 99 is out of range for SKU: PALLET-A
 >  [OK] Deleted SKU [PALLET-B] and all its tasks.
@@ -105,9 +127,9 @@ __________________________________________________________________________
 > >  All tasks:
 __________________________________________________________________________
  SKU [PALLET-A]:
-1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01
+1. [ ] ID: PALLET-A | Priority: HIGH | Due: 2026-04-01 | Desc: restock widgets
  SKU [PALLET-C]:
-1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15
+1. [ ] ID: PALLET-C | Priority: LOW | Due: 2026-04-15 | Desc: inspect pallets
  SKU [PALLET-D]:
    No tasks for this SKU.
 __________________________________________________________________________

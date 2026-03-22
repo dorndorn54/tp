@@ -9,10 +9,10 @@ addsku n/PALLET-A l/C1
 addsku n/PALLET-D l/Z9
 addsku n/PALLET-E
 
-addskutask n/PALLET-A d/2026-04-01 p/HIGH
-addskutask n/PALLET-A d/2026-04-05 p/MEDIUM
-addskutask n/PALLET-B d/2026-04-10
-addskutask n/PALLET-C d/2026-04-15 p/LOW
+addskutask n/PALLET-A d/2026-04-01 p/HIGH t/restock widgets
+addskutask n/PALLET-A d/2026-04-05 p/MEDIUM t/count inventory
+addskutask n/PALLET-B d/2026-04-10 t/ship out
+addskutask n/PALLET-C d/2026-04-15 p/LOW t/inspect pallets
 
 addskutask n/GHOST-SKU d/2026-04-01 p/HIGH
 addskutask n/PALLET-A d/2026-04-01 p/URGENT
@@ -36,6 +36,13 @@ listtasks l/C3
 listtasks p/CRITICAL
 listtasks l/Z9
 listtasks n/GHOST-SKU
+
+find n/PALLET-A
+find t/restock
+find n/PALLET-B t/ship i/1
+find t/nonexistent
+find n/PALLET-A i/99
+find
 
 deletetask n/PALLET-A i/2
 deletetask n/PALLET-A i/99

@@ -14,6 +14,7 @@ public class ItemTasker {
 
     /**
      * The main execution method for the application.
+     * 
      * @param args Command line arguments.
      * @throws ItemTaskerException If a top-level error occurs during execution.
      */
@@ -26,8 +27,12 @@ public class ItemTasker {
 
         while (runner.isRunning()) {
             String input = ui.readInput();
-            ParsedCommand cmd = Parser.parse(input);
-            runner.run(cmd);
+            try {
+                ParsedCommand cmd = Parser.parse(input);
+                runner.run(cmd);
+            } catch (ItemTaskerException e) {
+                Ui.printError(e.getMessage());
+            }
         }
     }
 }
