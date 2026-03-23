@@ -46,6 +46,16 @@ public class SKU {
     }
 
     /**
+     * Sets the warehouse location of this SKU.
+     *
+     * @param location The new Location to assign.
+     */
+    public void setLocation(Location location) {
+        assert location != null : "SKU Location cannot be null";
+        this.skuLocation = location;
+    }
+
+    /**
      * Retrieves the list of tasks assigned to this SKU.
      *
      * @return The SKUTaskList containing all tasks associated with the SKU.

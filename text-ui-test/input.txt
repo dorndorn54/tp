@@ -58,4 +58,11 @@ deletesku n/GHOST-SKU
 
 listtasks
 
+editsku n/PALLET-A l/C2
+editsku n/PALLET-D l/B3
+editsku n/GHOST-SKU l/A1
+editsku n/PALLET-A l/Z9
+editsku n/PALLET-A
+editsku l/A1
+
 bye

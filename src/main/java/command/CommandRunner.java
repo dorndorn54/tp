@@ -73,6 +73,9 @@ public class CommandRunner {
         case "deletesku":
             handleDeleteSku(cmd);
             break;
+        case "editsku":
+            handleEditSku(cmd);
+            break;
         case "addskutask":
             handleAddSkuTask(cmd);
             break;
@@ -147,6 +150,39 @@ public class CommandRunner {
 
         skuList.addSKU(skuId, location);
         Ui.printSuccess("Added SKU [" + skuId.toUpperCase() + "] at location " + location);
+    }
+
+    /**
+     * Parses arguments and updates the warehouse location of an existing SKU.
+     *
+     * @param cmd The parsed command containing the SKU ID and new location.
+     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     */
+    private void handleEditSku(ParsedCommand cmd) throws SKUNotFoundException {
+        String skuId = cmd.getArg("n");
+        String locationStr = cmd.getArg("l");
+
+        if (skuId == null || locationStr == null) {
+            Ui.printError("Usage: editsku n/SKU_ID l/NEW_LOCATION");
+            return;
+        }
+
+        SKU targetSku = findSku(skuId);
+        if (targetSku == null) {
+            Ui.printError("SKU not found: " + skuId);
+            return;
+        }
+
+        Location newLocation;
+        try {
+            newLocation = Location.valueOf(locationStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Ui.printError("Invalid location '" + locationStr + "'. Must be one of: A1 A2 A3 B1 B2 B3 C1 C2 C3");
+            return;
+        }
+
+        targetSku.setLocation(newLocation);
+        Ui.printSuccess("Updated location of SKU [" + skuId.toUpperCase() + "] to " + newLocation + ".");
     }
 
     /**

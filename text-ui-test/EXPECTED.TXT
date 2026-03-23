@@ -13,6 +13,7 @@ __________________________________________________________________________
 __________________________________________________________________________
  SKU MANAGEMENT
    addsku n/SKU_ID l/LOCATION          Add a SKU to the warehouse.
+   editsku n/SKU_ID l/NEW_LOCATION     Move a SKU to a new warehouse location.
    deletesku n/SKU_ID                  Remove a SKU and all its tasks.
 
  TASK MANAGEMENT
@@ -140,6 +141,12 @@ __________________________________________________________________________
  SKU [PALLET-D]:
    No tasks for this SKU.
 __________________________________________________________________________
+> >  [OK] Updated location of SKU [PALLET-A] to C2.
+>  [OK] Updated location of SKU [PALLET-D] to B3.
+>  [ERROR] SKU not found: GHOST-SKU
+>  [ERROR] Invalid location 'Z9'. Must be one of: A1 A2 A3 B1 B2 B3 C1 C2 C3
+>  [ERROR] Usage: editsku n/SKU_ID l/NEW_LOCATION
+>  [ERROR] Usage: editsku n/SKU_ID l/NEW_LOCATION
 > > __________________________________________________________________________
  Goodbye! All tasks have been saved.
 __________________________________________________________________________
