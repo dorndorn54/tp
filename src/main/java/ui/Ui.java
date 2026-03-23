@@ -90,6 +90,7 @@ public class Ui {
         System.out.println(DIVIDER);
         System.out.println(" SKU MANAGEMENT");
         System.out.println("   addsku n/SKU_ID l/LOCATION          Add a SKU to the warehouse.");
+        System.out.println("   editsku n/SKU_ID l/NEW_LOCATION     Move a SKU to a new warehouse location.");
         System.out.println("   deletesku n/SKU_ID                  Remove a SKU and all its tasks.");
         System.out.println();
         System.out.println(" TASK MANAGEMENT");
