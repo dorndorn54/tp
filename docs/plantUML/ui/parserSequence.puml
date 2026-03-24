@@ -1,0 +1,30 @@
+@startuml
+!include ../style.puml
+
+Actor User as user USER_COLOR
+Participant ":Ui" as ui UI_COLOR
+Participant ":Parser" as parser LOGIC_COLOR_T1
+Participant ":ParsedCommand" as cmd MODEL_COLOR
+
+user -> ui ++ : "addsku n/P-A l/A1"
+ui -> parser ++ : parse(input)
+
+parser -> parser ++ : trim and split input
+return commandWord, argsString
+
+alt argsString is not empty
+    parser -> parser ++ : parseFlags(argsString)
+
+    loop for each token
+        parser -> parser ++ : split at slash, extract key/value
+        return key, value
+    end
+
+    return Map<String, String>
+end
+
+parser -> cmd ** : new ParsedCommand(commandWord, args)
+
+return cmd : ParsedCommand
+return cmd : ParsedCommand
+@enduml

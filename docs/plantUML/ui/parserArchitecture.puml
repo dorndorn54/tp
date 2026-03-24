@@ -1,0 +1,16 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+
+class Parser LOGIC_COLOR_T1 {
+    + {static} parse(input : String) : ParsedCommand
+    - {static} parseFlags(argsString : String) : Map<String, String>
+}
+
+class ParsedCommand MODEL_COLOR {
+    - commandWord : String
+    - args : Map<String, String>
+}
+
+Parser ..> ParsedCommand : creates
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+
+class Ui UI_COLOR {
+    - {static} DIVIDER : String
+    - {static} LOGO : String
+    - scanner : Scanner
+    + Ui()
+    + readInput() : String
+    + {static} printWelcome() : void
+    + {static} printGoodbye() : void
+    + {static} printSuccess(message : String) : void
+    + {static} printError(message : String) : void
+    + {static} printInfo(message : String) : void
+    + {static} printUnknownCommand(command : String) : void
+    + {static} printHelp() : void
+    + {static} printDivider() : void
+}
+
+class CommandRunner LOGIC_COLOR {
+    + run(cmd : ParsedCommand) : void
+}
+
+CommandRunner ..> Ui : uses
+
+@enduml

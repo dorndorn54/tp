@@ -1,0 +1,36 @@
+@startuml
+!include ../style.puml
+
+Actor User as user USER_COLOR
+Participant ":Ui" as ui UI_COLOR
+Participant ":Parser" as parser LOGIC_COLOR_T1
+Participant ":CommandRunner" as runner LOGIC_COLOR
+
+ui -> ui ++ : printWelcome()
+return
+
+loop while runner.isRunning()
+    ui -> user : "> " (prompt)
+    user -> ui ++ : readInput()
+    return input : String
+
+    ui -> parser ++ : parse(input)
+    return cmd : ParsedCommand
+
+    ui -> runner ++ : run(cmd)
+
+    alt valid command
+        runner -> ui : printSuccess(message)
+    else unknown command
+        runner -> ui : printUnknownCommand(commandWord)
+    else error occurred
+        runner -> ui : printError(message)
+    else bye / exit
+        runner -> ui : printGoodbye()
+        runner -> runner : isRunning = false
+    end
+
+    return
+end
+
+@enduml
