@@ -108,6 +108,7 @@ public class Ui {
         System.out.println("   listtasks p/PRIORITY                List tasks filtered by priority.");
         System.out.println("   listtasks l/LOCATION                List tasks sorted by distance.");
         System.out.println("   find [n/SKU_ID] [t/DESC] [i/INDEX]  Search tasks by SKU, description, index.");
+        System.out.println("   viewmap                             Show warehouse map.");
         System.out.println();
         System.out.println(" OTHER");
         System.out.println("   export                             Export inventory to a readable text file.");

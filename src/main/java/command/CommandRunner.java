@@ -16,6 +16,7 @@ import skutask.SKUTaskList;
 import skutask.ViewSKUTask;
 import storage.Storage;
 import ui.Ui;
+import ui.ViewMap;
 
 import java.io.IOException;
 import java.util.List;
@@ -103,6 +104,9 @@ public class CommandRunner {
         case "help":
             Ui.printHelp();
             break;
+        case "viewmap":
+            handleViewMap();
+            break;
         case "bye":
         case "exit":
             try {
@@ -118,6 +122,10 @@ public class CommandRunner {
         default:
             Ui.printUnknownCommand(cmd.getCommandWord());
         }
+    }
+
+    private void handleViewMap() {
+        new ViewMap().printTaskMap(this.skuList);
     }
 
     /**

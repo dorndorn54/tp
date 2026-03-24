@@ -31,6 +31,7 @@ __________________________________________________________________________
    listtasks p/PRIORITY                List tasks filtered by priority.
    listtasks l/LOCATION                List tasks sorted by distance.
    find [n/SKU_ID] [t/DESC] [i/INDEX]  Search tasks by SKU, description, index.
+   viewmap                             Show warehouse map.
 
  OTHER
    export                             Export inventory to a readable text file.
