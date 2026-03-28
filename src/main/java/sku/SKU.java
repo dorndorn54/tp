@@ -6,6 +6,7 @@ import skutask.SKUTaskList;
  * Represents a Stock Keeping Unit (SKU) in the inventory ticketing system.
  * Contains the SKU identifier, its physical location in the warehouse, and a list of tasks assigned to it.
  */
+//@@author omcodedthis
 public class SKU {
     private String skuID;
     private Location skuLocation;

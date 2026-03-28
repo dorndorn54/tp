@@ -8,6 +8,7 @@ import java.util.logging.Logger;
  * Represents a list of Stock Keeping Units (SKUs).
  * Provides operations to manage the collection of SKUs, such as adding and deleting.
  */
+//@@author omcodedthis
 public class SKUList {
     private static final Logger LOGGER = Logger.getLogger(SKUList.class.getName());
     private final ArrayList<SKU> skuList;
