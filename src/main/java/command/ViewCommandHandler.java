@@ -141,6 +141,7 @@ public class ViewCommandHandler {
         return entries;
     }
 
+//@@author heehaw1234
     // ========== find — validate, search, display (SLAP) ==========
 
     /**
