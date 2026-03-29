@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //@@author heehaw1234
+
 /**
  * Represents a task associated with a Stock Keeping Unit (SKU).
  * Each task has an ID, a priority level, a due date, and a completion status.
@@ -75,7 +76,8 @@ public class SKUTask {
         this(skuTaskID, Priority.HIGH, dueDate, "");
     }
 
-//@@author AkshayPranav19
+    //@@author AkshayPranav19
+
     /**
      * Returns the description of this task.
      *
@@ -97,7 +99,8 @@ public class SKUTask {
         this.taskDescription = taskDescription;
     }
 
-//@@author heehaw1234
+    //@@author heehaw1234
+
     /**
      * Sets the due date of this task.
      *
@@ -150,7 +153,8 @@ public class SKUTask {
         return dueDate;
     }
 
-//@@author AkshayPranav19
+    //@@author AkshayPranav19
+
     /**
      * Returns whether this task is marked as done.
      *
@@ -178,7 +182,8 @@ public class SKUTask {
         LOGGER.log(Level.INFO, "Task {0} unmarked", skuTaskID);
     }
 
-//@@author heehaw1234
+    //@@author heehaw1234
+
     /**
      * Returns a string representation of the task including its status, ID, priority, and due date.
      *
