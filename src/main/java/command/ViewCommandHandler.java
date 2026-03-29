@@ -1,7 +1,5 @@
 package command;
 
-import exception.EmptyListException;
-import exception.InvalidCommandException;
 import exception.InvalidIndexException;
 import exception.MissingArgumentException;
 import exception.SKUNotFoundException;
@@ -37,13 +35,12 @@ public class ViewCommandHandler {
     }
 
     /**
-     * Dispatches to the appropriate listing sub-method based on which filter is
-     * provided.
+     * Dispatches to the appropriate listing sub-method based on the provided filter flag.
+     * Validates that only one filter (n/, p/, or l/) is used and that flags are recognized.
      *
      * @param cmd The parsed command containing optional filter arguments.
-     * @throws InvalidCommandException If the command format is fundamentally invalid.
-     * @throws EmptyListException      If the system is queried but currently tracks no tasks.
-     * @throws SKUNotFoundException    If a specific SKU filter is applied but the SKU does not exist.
+     * @throws MultipleFilterException If more than one filter flag is provided (e.g., n/ and p/).
+     * @throws InvalidFilterException  If an unrecognized flag is detected (e.g., h/).
      */
     public void handleListTasks(ParsedCommand cmd) throws MultipleFilterException, InvalidFilterException {
         String skuFilter = cmd.getArg("n");
