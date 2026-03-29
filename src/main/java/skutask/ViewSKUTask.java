@@ -81,7 +81,7 @@ public class ViewSKUTask {
     public int calculateDistance(SKUTask task, String currentPos, SKUList fullList) {
         SKU parentSku = null;
         for (SKU s : fullList.getSKUList()) {
-            if (s.getSKUID().equals(task.getSKUTaskID())) {
+            if (s.getSKUID().equalsIgnoreCase(task.getSKUTaskID())) {
                 parentSku = s;
                 break;
             }
