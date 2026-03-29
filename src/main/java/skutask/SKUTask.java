@@ -1,10 +1,16 @@
 package skutask;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//@@author heehaw1234
+
 /**
  * Represents a task associated with a Stock Keeping Unit (SKU).
  * Each task has an ID, a priority level, a due date, and a completion status.
  */
 public class SKUTask {
+    private static final Logger LOGGER = Logger.getLogger(SKUTask.class.getName());
     private String skuTaskID;
     private Priority priority;
     private String dueDate;
@@ -30,6 +36,9 @@ public class SKUTask {
         this.dueDate = dueDate;
         this.isDone = false;
         this.taskDescription = taskDescription;
+
+        LOGGER.log(Level.INFO, "SKUTask created: ID={0}, priority={1}, due={2}",
+                new Object[]{skuTaskID, priority, dueDate});
     }
 
     /**
@@ -67,6 +76,8 @@ public class SKUTask {
         this(skuTaskID, Priority.HIGH, dueDate, "");
     }
 
+    //@@author AkshayPranav19
+
     /**
      * Returns the description of this task.
      *
@@ -82,8 +93,13 @@ public class SKUTask {
      * @param taskDescription The new description to assign.
      */
     public void setSKUTaskDescription(String taskDescription) {
+        assert taskDescription != null : "Task description cannot be null";
+        LOGGER.log(Level.FINE, "Task {0} description updated to: {1}",
+                new Object[]{skuTaskID, taskDescription});
         this.taskDescription = taskDescription;
     }
+
+    //@@author heehaw1234
 
     /**
      * Sets the due date of this task.
@@ -91,6 +107,9 @@ public class SKUTask {
      * @param dueDate The new due date to assign.
      */
     public void setSKUTaskDueDate(String dueDate) {
+        assert dueDate != null : "Due date cannot be null";
+        LOGGER.log(Level.FINE, "Task {0} due date updated to: {1}",
+                new Object[]{skuTaskID, dueDate});
         this.dueDate = dueDate;
     }
 
@@ -100,6 +119,9 @@ public class SKUTask {
      * @param priority The new priority to assign.
      */
     public void setSKUTaskPriority(Priority priority) {
+        assert priority != null : "Priority cannot be null";
+        LOGGER.log(Level.FINE, "Task {0} priority updated to: {1}",
+                new Object[]{skuTaskID, priority});
         this.priority = priority;
     }
 
@@ -131,6 +153,8 @@ public class SKUTask {
         return dueDate;
     }
 
+    //@@author AkshayPranav19
+
     /**
      * Returns whether this task is marked as done.
      *
@@ -146,6 +170,7 @@ public class SKUTask {
     public void mark() {
         assert !isDone : "Task is already marked as done.";
         this.isDone = true;
+        LOGGER.log(Level.INFO, "Task {0} marked as done", skuTaskID);
     }
 
     /**
@@ -154,7 +179,10 @@ public class SKUTask {
     public void unmark() {
         assert isDone : "Task is already marked as not done.";
         this.isDone = false;
+        LOGGER.log(Level.INFO, "Task {0} unmarked", skuTaskID);
     }
+
+    //@@author heehaw1234
 
     /**
      * Returns a string representation of the task including its status, ID, priority, and due date.
