@@ -2,6 +2,7 @@
 !include ../style.puml
 skinparam arrowThickness 1.1
 skinparam classAttributeIconSize 0
+hide circle
 
 class CommandRunner LOGIC_COLOR {
   - isRunning: boolean

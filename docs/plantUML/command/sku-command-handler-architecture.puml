@@ -2,6 +2,7 @@
 !include ../style.puml
 skinparam arrowThickness 1.1
 skinparam classAttributeIconSize 0
+hide circle
 
 class SkuCommandHandler LOGIC_COLOR {
   + handleAddSku(cmd: ParsedCommand): void
