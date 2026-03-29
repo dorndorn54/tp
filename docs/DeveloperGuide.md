@@ -233,14 +233,42 @@ The following class diagram shows how the `ViewSKUTask` logic component interact
 
 ## Appendix B: User Stories
 
-| Version | As a ... | I want to ...             | So that I can ...                                           |
-|---------|----------|---------------------------|-------------------------------------------------------------|
-| v1.0    | new user | see usage instructions    | refer to them when I forget how to use the application      |
-| v2.0    | user     | find a to-do item by name | locate a to-do without having to go through the entire list |
+| Version | As a ... | I want to ... | So that I can ... |
+|---------|----------|---------------|-------------------|
+| v1.0 | Inventory Manager | register a new SKU | begin tracking accountability tasks for this particular SKU |
+| v1.0 | Inventory Manager | add a task to a specific SKU | ensure necessary inspections are conducted |
+| v1.0 | Inventory Manager | assign a priority level to each task | clear tasks that need to be performed first |
+| v1.0 | Inventory Manager | mark a task as completed for a specific SKU | track the tasks completed in a given day |
+| v1.0 | Inventory Manager | set due dates for tasks assigned to a SKU | quicly locate specific tasks without browsing through the entire list |
+| v1.0 | Inventory Manager | input my current location and sort tasks in terms of distance to me | clear tasks in the warehouse starting with the closest task (in terms of distance) to me |
+| v1.0 | Inventory Manager | delete a task for a specific SKU | not unnecessarily track it if it needs to be dropped |
+| v1.0 | Inventory Manager | view all my tasks in a single dashboard ordered by SKU | know what needs to be completed & plan accordingly |
+| v1.0 | Inventory Manager | set a default priority for all new tasks | speed up the task creation process |
+| v1.0 | Inventory Manager | attach a "Location" to a task | not waste time looking for the item that needs work |
+| v2.0 | Inventory Manager | sort my tasks by priority | complete only high-priority tasks in the event of limited time |
+| v2.0 | Inventory Manager | pull up the tasks only for a specific SKU | complete all the tasks for a given SKU if required |
+| v2.0 | Inventory Manager | search for tasks using keywords | quickly locate specific tasks without browsing through the entire list |
+| v2.0 | Inventory Manager | view a help guide of available commands | learn how to use the CLI without external documentation |
+| v2.0 | Inventory Manager | generate a view of the amount of tasks in each sector of the warehouse | have a birds-eye view of the location of each task |
+| v2.0 | Inventory Manager | add notes or comments to individual task | document observations or special conditions during task execution |
+| v2.0 | Inventory Manager | register a new SKU identifier into a localDB | track specific tasks for an item separately |
+| v2.0 | Inventory Manager | attach an action item to a registered SKU | the condition + quality of the item is monitored |
+| v2.0 | Inventory Manager | assign priority level when creating a task | ensure urgent issues such as expiring goods are attended to in time |
+| v2.0 | Inventory Manager | execute a command to view a dashboard summary of all active SKUs & pending tasks | get instantly get a view of all SKUs without using a complicated GUI |
+| v2.0 | Inventory Manager | mark a task as resolved | clear the queue of outstanding tasks by priority |
+| v2.0 | Inventory Manager | export a list of all high priority tasks to a readable format, e.g CSV | print a physical checklist for warehouse associates who do not have access to the CLI |
+| v2.0 | Inventory Manager | search for a specific SKU id | quickly audit all pending actions for a specific product that might be under inspection / recall |
+| v2.0 | Inventory Manager | edit the description of an existing task | update information efficiently |
 
 ## Appendix C: Non-Functional Requirements
 
-{Give non-functional requirements}
+1. **Environment Requirements:** The system should work on any mainstream OS (Windows, Linux, macOS) as long as it has Java `17` or above installed.
+2. **Data Requirements:** Data should be stored locally in a single `Data/storage.json` file without requiring a standalone database management system. The size of the text file should be kept minimal.
+3. **Performance Requirements:** The system should execute all commands (e.g. adding, deleting, listing) and display the output within two seconds on a standard modern PC.
+4. **Usability (Quality) Requirements:** A user with above-average typing speed for regular English text (i.e., not code, not system admin commands) should be able to accomplish most of the tasks faster using CLI than using a GUI-based application.
+5. **Quality (Robustness) Requirements:** The application should be able to handle invalid user input gracefully without crashing.
+6. **Process Requirements:** The project should follow the milestones set for CS2113 and utilize GitHub Actions for Continuous Integration (CI) and automated testing.
+7. **Maintainability Requirements:** Code should be structured in a modular fashion using Object-Oriented principles to ensure extensibility for future features. Strict Checkstyle rule configurations must be adhered to.
 
 ## Appendix D: Glossary
 
