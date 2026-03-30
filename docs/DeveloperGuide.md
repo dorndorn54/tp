@@ -303,8 +303,79 @@ The following class diagram shows how the `ViewSKUTask` logic component interact
 
 ## Appendix D: Glossary
 
-* *glossary item* - Definition
+* **CLI (Command Line Interface)**: A text-based user interface used to interact with software by typing specific commands. In ItemTasker, this allows for faster data entry than a traditional Graphical User Interface (GUI).
+* **Command Delegation**: A design pattern where a central component (the CommandRunner) avoids becoming a "God Object" by passing specific task responsibilities to specialized handler classes.
+* **Encapsulation**: An Object-Oriented Programming (OOP) concept that binds data and the functions that manipulate them into a single unit, protecting the internal state from unauthorized outside interference.
+* **Flattening (Data Aggregation)**: The process of collecting nested data (e.g., gathering all Tasks from every individual SKU) and transforming them into a single, continuous list to perform global operations like sorting or filtering.
+* **JSON (JavaScript Object Notation)**: A lightweight, text-based data format that is easy for humans to read and write. ItemTasker uses this for the storage.json file to persist warehouse states.
+* **Multiplicity**: A UML term indicating the relationship between classes. For example, a "1 to *" multiplicity indicates that one SKUList can contain many SKU instances.
+* **O(N) Complexity**: A notation used to describe how the execution time of an algorithm grows linearly in proportion to the number of items (N) in the data set.
+* **ParsedCommand**: A data object created by the Parser that breaks down a raw user input string into structured components (command word and arguments) for the logic layer to process.
+* **Priority (Enum)**: A specialized data type consisting of a set of named constants (HIGH, MEDIUM, LOW) used to categorize and sort the urgency of warehouse tasks.
+* **SKU (Stock Keeping Unit)**: A unique identifier for a specific product or pallet. In ItemTasker, the SKU acts as the primary parent object that manages its own internal list of tasks.
+* **Unit Testing (JUnit 5)**: A testing framework used to verify that individual "units" of code (like methods or classes) work correctly in isolation.
 
 ## Appendix E: Instructions for Manual Testing
 
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+Given below are instructions to test the ItemTasker system manually. Follow these steps in order to ensure the data flows correctly from one feature to the next.
+
+### 1. Initial Launch and Clean State
+* **Target:** Ensure the app starts with a fresh or predictable state.
+* **Action:** Delete the `Data/storage.json` file if it exists in your project directory.
+* **Action:** Run the application.
+* **Expected Result:** The welcome banner and logo appear. A new, empty `Data/storage.json` is created in the `Data/` folder.
+
+### 2. SKU Management
+* **Target:** Test the creation, movement, and duplicate prevention of SKUs.
+* **Step 1 (Add):** Type `addsku n/P1 l/A1` and press Enter.
+  * **Expected Result:** UI confirms SKU `P1` was added at location `A1`.
+* **Step 2 (Duplicate Check):** Type `addsku n/P1 l/B2`.
+  * **Expected Result:** An `[ERROR]` appears stating that SKU `P1` already exists.
+* **Step 3 (Edit/Move):** Type `editsku n/P1 l/B3`.
+  * **Expected Result:** UI confirms `P1` moved from `A1` to location `B3`.
+
+### 3. Task Lifecycle & Modification
+* **Target:** Verify that tasks can be added, edited, toggled, and sorted within a SKU.
+* **Step 1 (Add Task):** Type `addskutask n/P1 d/2026-12-31 p/MEDIUM t/Initial Check`.
+  * **Expected Result:** Success message confirms the task was added specifically to SKU P1.
+* **Step 2 (Edit Task):** Type `edittask n/P1 i/1 p/HIGH t/Urgent Audit`.
+  * **Expected Result:** Task 1 updates to HIGH priority with the new description "Urgent Audit".
+* **Step 3 (Mark Task):** Type `marktask n/P1 i/1`, then type `listtasks n/P1`.
+  * **Expected Result:** The task list displays the task with a completed status marker [X].
+* **Step 4 (Unmark Task):** Type `unmarktask n/P1 i/1`, then type `listtasks n/P1`.
+  * **Expected Result:** The task status returns to pending, indicated by an empty [ ].
+* **Step 5 (View Sorted Tasks):** Type `addskutask n/P1 d/2025-01-01 p/LOW t/Old Task`, then type `sorttasks n/P1 s/date o/asc`.
+  * **Expected Result:** The output of this command shows "Old Task" (2025) at the top of the list, followed by "Urgent Audit" (2026).
+* **Step 6 (Verify Internal Order):** Type `listtasks n/P1`.
+  * **Expected Result:** The list reverts to the original insertion order: "Urgent Audit" appears as index 1, and "Old Task" appears as index 2.
+* **Step 7 (Delete Task):** Type `deletetask n/P1 i/2`.
+  * **Expected Result:** The "Old Task" (index 2) is removed. `listtasks n/P1` now shows only the "Urgent Audit" task remaining.
+
+### 4. Advanced Viewing & Search
+* **Target:** Test global filters, distance-based sorting, and keyword searching.
+* **Step 1 (Setup extra data):** Type `addsku n/P2 l/A1` followed by `addskutask n/P2 d/2026-06-01 p/LOW t/Minor cleanup`.
+* **Step 2 (Global List):** Type `listtasks`.
+  * **Expected Result:** Displays all tasks grouped under their respective SKUs (`P1` and `P2`).
+* **Step 3 (Priority Filter):** Type `listtasks p/HIGH`.
+  * **Expected Result:** Shows only the "Urgent Audit" task from `P1`.
+* **Step 4 (Distance Sort):** Type `listtasks l/B3`.
+  * **Expected Result:** Lists tasks starting with those at `B3` (the location of `P1`).
+* **Step 5 (Find Keyword):** Type `find t/Audit`.
+  * **Expected Result:** Specifically returns the "Urgent Audit" task.
+
+### 5. Status Analysis & Map
+* **Target:** Verify the high-level dashboarding features.
+* **Step 1 (SKU Status):** Type `status n/P1`.
+  * **Expected Result:** Displays detailed stats for `P1` (Total: 1, Pending High: 1).
+* **Step 2 (Warehouse Status):** Type `status`.
+  * **Expected Result:** Shows a compact one-line summary for both `P1` and `P2`.
+* **Step 3 (Map):** Type `viewmap`.
+  * **Expected Result:** Displays the 3x3 grid showing task counts at `B3` (P1) and `A1` (P2).
+
+### 6. Data Integrity & Export
+* **Target:** Ensure data persists across sessions and exports correctly.
+* **Step 1 (Export):** Type `export`.
+  * **Expected Result:** UI confirms success. Check `Data/ItemTasker_Export.txt` to verify the content matches your current session.
+* **Step 2 (Persistence):** Type `exit`, then relaunch the application.
+* **Step 3 (Verify Load):** Type `status`.
+  * **Expected Result:** Both `P1` and `P2` are still present with their correct task counts.
