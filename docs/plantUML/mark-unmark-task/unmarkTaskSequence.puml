@@ -5,6 +5,8 @@ Actor User as user USER_COLOR
 Participant ":Ui" as ui UI_COLOR
 Participant ":Parser" as parser LOGIC_COLOR_T1
 Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":TaskCommandHandler" as handler LOGIC_COLOR
+Participant ":CommandHelper" as helper LOGIC_COLOR
 Participant ":SKUList" as skuList MODEL_COLOR
 Participant ":SKU" as sku MODEL_COLOR_T1
 Participant ":SKUTaskList" as taskList MODEL_COLOR_T2
@@ -15,23 +17,33 @@ ui -> parser ++ : parse(...)
 return cmd : ParsedCommand
 
 ui -> runner ++ : run(cmd)
-runner -> runner ++ : handleUnmarkTask(cmd)
+runner -> handler ++ : handleUnmarkTask(cmd)
 
-runner -> runner ++ : findSku("P-A")
-runner -> skuList ++ : getSKUList()
-return List<SKU>
-return targetSku
+handler -> helper ++ : parseIndex("1")
+return 1
 
-runner -> sku ++ : getSKUTaskList()
+handler -> helper ++ : findSkuOrError(skuList, "P-A")
+helper -> skuList ++ : findByID("P-A")
+return sku
+return sku
+
+handler -> sku ++ : getSKUTaskList()
 return taskList
 
-runner -> taskList ++ : getSKUTaskList()
+handler -> taskList ++ : getSize()
+return size
+
+alt index < 1 or index > size
+    handler -> handler : throw InvalidIndexException
+end
+
+handler -> taskList ++ : getSKUTaskList()
 return ArrayList<SKUTask>
 
-runner -> task ++ : isDone()
+handler -> task ++ : isDone()
 return true
 
-runner -> taskList ++ : unmarkTask(1)
+handler -> taskList ++ : unmarkTask(1)
 taskList -> task ++ : unmark()
 return
 return

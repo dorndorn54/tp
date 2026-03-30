@@ -4,10 +4,14 @@ skinparam arrowThickness 1.1
 skinparam classAttributeIconSize 0
 hide circle
 
-class CommandRunner LOGIC_COLOR {
-  - isRunning: boolean
-  - handleMarkTask(cmd: ParsedCommand): void
-  - handleUnmarkTask(cmd: ParsedCommand): void
+class TaskCommandHandler LOGIC_COLOR {
+  + handleMarkTask(cmd: ParsedCommand): void
+  + handleUnmarkTask(cmd: ParsedCommand): void
+}
+
+class CommandHelper LOGIC_COLOR {
+  + {static} findSkuOrError(skuList: SKUList, skuId: String): SKU
+  + {static} parseIndex(indexStr: String): int
 }
 
 class SKUList MODEL_COLOR {
@@ -21,6 +25,8 @@ class SKU MODEL_COLOR_T1 {
 class SKUTaskList MODEL_COLOR_T2 {
   + markTask(index: int): void
   + unmarkTask(index: int): void
+  + getSize(): int
+  + getSKUTaskList(): ArrayList<SKUTask>
 }
 
 class SKUTask MODEL_COLOR_T3 {
@@ -34,7 +40,8 @@ class SKUTask MODEL_COLOR_T3 {
   + isDone(): boolean
 }
 
-CommandRunner -down-> "1" SKUList : skuList
+TaskCommandHandler -down-> "1" SKUList : skuList
+TaskCommandHandler ..> CommandHelper : uses
 SKUList -down-> "*" SKU : skuList
 SKU -down-> "1" SKUTaskList : skuTaskList
 SKUTaskList -down-> "*" SKUTask : skuTaskList
