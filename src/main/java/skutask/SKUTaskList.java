@@ -121,6 +121,7 @@ public class SKUTaskList {
      * @param skuIDToDelete The SKU identifier of the task to delete.
      */
     public void deleteSKUTask(String skuIDToDelete) {
+        assert skuIDToDelete != null && !skuIDToDelete.trim().isEmpty() : "SKU ID cannot be null or empty";
         int idxToDelete = getIndexOfSKUTask(skuIDToDelete);
         if (idxToDelete != -1) {
             skuTaskList.remove(idxToDelete);
@@ -139,10 +140,6 @@ public class SKUTaskList {
     public void deleteSKUTaskByIndex(int taskIndex) {
         assert taskIndex >= 1 && taskIndex <= skuTaskList.size()
                 : "Task index " + taskIndex + " out of bounds (size: " + skuTaskList.size() + ")";
-        if (taskIndex < 1 || taskIndex > skuTaskList.size()) {
-            throw new IndexOutOfBoundsException(
-                    "Task index " + taskIndex + " is out of range. List size: " + skuTaskList.size());
-        }
         skuTaskList.remove(taskIndex - 1);
         LOGGER.log(Level.INFO, "Task at index {0} deleted (size now {1})",
                 new Object[]{taskIndex, skuTaskList.size()});

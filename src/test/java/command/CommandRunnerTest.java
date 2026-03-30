@@ -436,6 +436,18 @@ public class CommandRunnerTest {
         assertTrue(output().contains("No tasks"));
     }
 
+    @Test
+    public void listtasks_multipleFilters_printsError() throws ItemTaskerException, IOException {
+        runner.run(cmd("listtasks", "n", "WIDGET-A1", "p", "HIGH"));
+        assertTrue(output().contains("Conflict: You can only use ONE filter"));
+    }
+
+    @Test
+    public void listtasks_unrecognizedFlag_printsError() throws ItemTaskerException, IOException {
+        runner.run(cmd("listtasks", "x", "UNKNOWN"));
+        assertTrue(output().contains("Unknown flag 'x/'. Only n/, p/, and l/ are allowed."));
+    }
+
     // -----------------------------------------------------------------------
     // help
     // -----------------------------------------------------------------------

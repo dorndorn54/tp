@@ -43,6 +43,7 @@ public class ViewCommandHandler {
      * @throws InvalidFilterException  If an unrecognized flag is detected (e.g., h/).
      */
     public void handleListTasks(ParsedCommand cmd) throws MultipleFilterException, InvalidFilterException {
+        assert cmd != null : "ParsedCommand should not be null";
         String skuFilter = cmd.getArg("n");
         String priorityFilter = cmd.getArg("p");
         String locationFilter = cmd.getArg("l");
@@ -92,7 +93,7 @@ public class ViewCommandHandler {
     private void listTasksForSku(String skuId) {
         SKU targetSku = skuList.findByID(skuId);
         if (targetSku == null || targetSku.getSKUTaskList().isEmpty()) {
-            logger.log(Level.WARNING, "Lookup failed: SKU {0} not found or empty.", skuId);
+            logger.log(Level.INFO, "Lookup finished: SKU {0} not found or empty.", skuId);
             Ui.printInfo("No tasks found for SKU: " + skuId.toUpperCase());
             return;
         }
@@ -193,9 +194,9 @@ public class ViewCommandHandler {
         int taskIndex = -1;
         if (indexStr != null) {
             taskIndex = CommandHelper.parseIndex(indexStr);
-            if (taskIndex == -1) {
+            if (taskIndex <= 0) {
                 logger.log(Level.WARNING, "Invalid task index provided: {0}", indexStr);
-                return;
+                throw new InvalidIndexException(indexStr);
             }
         }
 
@@ -301,19 +302,16 @@ public class ViewCommandHandler {
                 logger.log(Level.WARNING, "Task index {0} out of range for SKU {1} (size: {2})",
                         new Object[]{taskIndex, sku.getSKUID(), tasks.size()});
                 throw new InvalidIndexException(taskIndex, sku.getSKUID());
+            } else {
+                logger.log(Level.FINE, "Skipping SKU {0} (size: {1}) as task index {2} is out of bounds",
+                        new Object[]{sku.getSKUID(), tasks.size(), taskIndex});
             }
             return;
         }
 
-        try {
-            SKUTask task = tasks.get(taskIndex - 1);
-            if (CommandHelper.matchesDescription(task, descFilter)) {
-                results.add(formatSearchResult(sku.getSKUID(), taskIndex, task));
-            }
-        } catch (IndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "Unexpected index error accessing task {0} in SKU {1}",
-                    new Object[]{taskIndex, sku.getSKUID()});
-            throw new InvalidIndexException(taskIndex, sku.getSKUID());
+        SKUTask task = tasks.get(taskIndex - 1);
+        if (CommandHelper.matchesDescription(task, descFilter)) {
+            results.add(formatSearchResult(sku.getSKUID(), taskIndex, task));
         }
     }
 
@@ -326,6 +324,7 @@ public class ViewCommandHandler {
      * @param results    The accumulator list for formatted result strings.
      */
     private void searchAllTasks(SKU sku, ArrayList<SKUTask> tasks, String descFilter, List<String> results) {
+        assert sku != null : "SKU should not be null";
         assert tasks != null : "Task list should not be null for SKU: " + sku.getSKUID();
         logger.log(Level.FINE, "Searching all {0} tasks in SKU {1}",
                 new Object[]{tasks.size(), sku.getSKUID()});

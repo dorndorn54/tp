@@ -16,4 +16,13 @@ public class InvalidIndexException extends ItemTaskerException {
     public InvalidIndexException(int invalidIndex, String skuId) {
         super("Task index " + invalidIndex + " is out of range for SKU: " + skuId);
     }
+
+    /**
+     * Constructs an InvalidIndexException when a provided index string is not a valid integer.
+     *
+     * @param invalidIndexStr The string that could not be parsed into a valid index.
+     */
+    public InvalidIndexException(String invalidIndexStr) {
+        super("Invalid task index provided: " + invalidIndexStr + ". Please provide a valid positive integer.");
+    }
 }
