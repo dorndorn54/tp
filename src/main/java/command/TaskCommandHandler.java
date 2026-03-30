@@ -193,7 +193,8 @@ public class TaskCommandHandler {
 
         SKUTaskList taskList = targetSku.getSKUTaskList();
         if (index < 1 || index > taskList.getSize()) {
-            LOGGER.log(Level.WARNING, "Failed to delete task: Index " + index + " out of bounds for SKU [" + skuId + "]");
+            LOGGER.log(Level.WARNING, "Failed to delete task: Index " + index + " out of bounds for SKU ["
+                    + skuId + "]");
             throw new InvalidIndexException(index, skuId);
         }
 

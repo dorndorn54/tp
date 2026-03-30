@@ -63,7 +63,7 @@ public class ParsedCommand {
 
     /**
      * Returns a read-only set of all flag keys present in this command.
-     * * @return A set of all flag keys.
+     * @return A set of all flag keys.
      */
     public Set<String> getAllFlags() {
         return args.keySet();
