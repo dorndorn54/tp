@@ -34,6 +34,7 @@ __________________________________________________________________________
    listtasks l/LOCATION                List tasks sorted by distance.
    find [n/SKU_ID] [t/DESC] [i/INDEX]  Search tasks by SKU, description, index.
    viewmap                             Show warehouse map.
+   status [n/SKU_ID]                   Show completion status for SKU(s).
 
  OTHER
    export                             Export inventory to a readable text file.

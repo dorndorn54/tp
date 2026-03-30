@@ -3,6 +3,7 @@ package ui;
 import sku.SKU;
 import sku.SKUList;
 import skutask.SKUTask;
+import skutask.SKUStatusAnalyzer;
 
 import java.util.List;
 import java.util.Scanner;
@@ -117,6 +118,7 @@ public class Ui {
         System.out.println("   listtasks l/LOCATION                List tasks sorted by distance.");
         System.out.println("   find [n/SKU_ID] [t/DESC] [i/INDEX]  Search tasks by SKU, description, index.");
         System.out.println("   viewmap                             Show warehouse map.");
+        System.out.println("   status [n/SKU_ID]                   Show completion status for SKU(s).");
         System.out.println();
         System.out.println(" OTHER");
         System.out.println("   export                             Export inventory to a readable text file.");
@@ -258,5 +260,41 @@ public class Ui {
         }
         printDivider();
     }
+
+    //@@author SeanTLY23
+    /**
+     * Prints a detailed status breakdown for a single SKU.
+     *
+     * @param result The computed status result for the SKU.
+     */
+    public static void printSkuStatus(SKUStatusAnalyzer.StatusResult result) {
+        System.out.println(" Status for SKU [" + result.getSkuId().toUpperCase() + "]:");
+        printDivider();
+        System.out.println("  Total tasks:           " + result.getTotalTasks());
+        System.out.println("  Completed:             " + result.getCompletedTasks()
+                + " (" + result.getCompletionPercent() + "%)");
+        System.out.println("  Pending:               " + result.getPendingTasks());
+        System.out.println("  Pending HIGH priority: " + result.getPendingHighPriority());
+        System.out.println("  Overdue:               " + result.getOverdueCount());
+        printDivider();
+    }
+
+    /**
+     * Prints a compact warehouse-wide status summary with one line per SKU.
+     *
+     * @param results The list of status results, one per SKU.
+     */
+    public static void printWarehouseStatus(List<SKUStatusAnalyzer.StatusResult> results) {
+        System.out.println(" Warehouse Status Summary:");
+        printDivider();
+        for (SKUStatusAnalyzer.StatusResult r : results) {
+            System.out.println(" SKU [" + r.getSkuId().toUpperCase() + "]: Total: "
+                    + r.getTotalTasks() + " | Done: " + r.getCompletedTasks()
+                    + " (" + r.getCompletionPercent() + "%)" + " | Pending HIGH: "
+                    + r.getPendingHighPriority() + " | Overdue: " + r.getOverdueCount());
+        }
+        printDivider();
+    }
+
 }
 

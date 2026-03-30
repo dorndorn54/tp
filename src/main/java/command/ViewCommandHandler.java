@@ -12,6 +12,7 @@ import sku.SKUList;
 import skutask.SKUTask;
 import skutask.ViewSKUTask;
 import ui.Ui;
+import skutask.SKUStatusAnalyzer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,6 +163,38 @@ public class ViewCommandHandler {
         }
         return entries;
     }
+
+    /**
+     * Handles the 'status' command by computing and displaying completion
+     * statistics for one or all SKUs.
+     *
+     * @param cmd The parsed command containing an optional n/ SKU filter.
+     */
+    public void handleStatus(ParsedCommand cmd) {
+        assert cmd != null : "ParsedCommand should not be null";
+
+        String skuFilter = cmd.getArg("n");
+        SKUStatusAnalyzer analyzer = new SKUStatusAnalyzer();
+
+        if (skuFilter != null) {
+            logger.log(Level.INFO, "Status requested for SKU: {0}", skuFilter);
+            SKU targetSku = CommandHelper.findSkuOrError(skuList, skuFilter);
+            if (targetSku == null) {
+                return;
+            }
+            SKUStatusAnalyzer.StatusResult result = analyzer.analyze(targetSku);
+            Ui.printSkuStatus(result);
+        } else {
+            logger.log(Level.INFO, "Status requested for all SKUs.");
+            if (skuList.isEmpty()) {
+                Ui.printInfo("No SKUs registered yet.");
+                return;
+            }
+            List<SKUStatusAnalyzer.StatusResult> results = analyzer.analyzeAll(skuList);
+            Ui.printWarehouseStatus(results);
+        }
+    }
+
 
     //@@author heehaw1234
     // ========== find — validate, search, display (SLAP) ==========

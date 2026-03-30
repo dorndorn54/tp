@@ -34,6 +34,13 @@ return sku
 handler -> sku ++ : getSKUTaskList()
 return taskList
 
+handler -> taskList ++ : getSize()
+return size
+
+alt index < 1 or index > size
+    handler -> handler : throw InvalidIndexException
+end
+
 handler -> helper ++ : parsePriority("LOW")
 return LOW
 

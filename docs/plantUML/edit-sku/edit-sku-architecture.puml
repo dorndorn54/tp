@@ -1,0 +1,29 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+hide circle
+
+class SkuCommandHandler LOGIC_COLOR {
+  + handleEditSku(cmd: ParsedCommand): void
+}
+
+class CommandHelper LOGIC_COLOR {
+  + {static} findSkuOrError(skuList: SKUList, skuId: String): SKU
+  + {static} parseLocation(locationStr: String): Location
+}
+
+class SKUList MODEL_COLOR {
+  + findByID(skuID: String): SKU
+}
+
+class SKU MODEL_COLOR_T1 {
+  - skuID: String
+  - skuLocation: Location
+  + setLocation(location: Location): void
+}
+
+SkuCommandHandler -down-> "1" SKUList : skuList
+SkuCommandHandler ..> CommandHelper : uses
+SKUList -down-> "*" SKU : skuList
+@enduml

@@ -101,6 +101,9 @@ public class CommandRunner {
         case "help":
             Ui.printHelp();
             break;
+        case "status":
+            viewHandler.handleStatus(cmd);
+            break;
         case "viewmap":
             new ViewMap().printTaskMap(this.skuList);
             break;
