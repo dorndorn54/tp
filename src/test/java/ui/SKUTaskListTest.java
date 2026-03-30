@@ -151,10 +151,14 @@ public class SKUTaskListTest {
     }
 
     @Test
-    public void deleteSKUTaskByIndex_invalidIndex_throwsException() {
+    public void deleteSKUTaskByIndex_invalidIndex_throwsExceptions() {
+        // With assertions enabled, this throws AssertionError.
+        // With assertions disabled, it throws IndexOutOfBoundsException.
+        // We capture any Throwable here strictly to ensure out-of-bounds are caught,
+        // but normally this would be prevented by the Command validation.
         SKUTaskList taskList = new SKUTaskList();
         taskList.addSKUTask("SKU-A", Priority.HIGH, "2026-01-01", "only task");
-        assertThrows(AssertionError.class, () -> taskList.deleteSKUTaskByIndex(5));
+        assertThrows(Throwable.class, () -> taskList.deleteSKUTaskByIndex(5));
     }
 
     @Test
@@ -165,5 +169,94 @@ public class SKUTaskListTest {
         assertEquals(1, taskList.getSize());
         assertEquals(Priority.HIGH, taskList.getSKUTaskList().get(0).getSKUTaskPriority());
         assertEquals("", taskList.getSKUTaskList().get(0).getSKUTaskDescription());
+    }
+
+    // --- Equivalence Partitions for editSKUTask ---
+    
+    @Test
+    public void editSKUTask_allFieldsProvided_updatesAllFields() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-EDIT", Priority.LOW, "2026-01-01", "Old desc");
+        
+        taskList.editSKUTask(1, "2026-12-31", Priority.HIGH, "New desc");
+        SKUTask task = taskList.getSKUTaskList().get(0);
+        
+        assertEquals("2026-12-31", task.getSKUTaskDueDate());
+        assertEquals(Priority.HIGH, task.getSKUTaskPriority());
+        assertEquals("New desc", task.getSKUTaskDescription());
+    }
+
+    @Test
+    public void editSKUTask_onlyCertainFields_leavesOthersUnchanged() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-EDIT2", Priority.LOW, "2026-01-01", "Old desc");
+        
+        taskList.editSKUTask(1, null, Priority.HIGH, null);
+        SKUTask task = taskList.getSKUTaskList().get(0);
+        
+        assertEquals("2026-01-01", task.getSKUTaskDueDate());
+        assertEquals(Priority.HIGH, task.getSKUTaskPriority());
+        assertEquals("Old desc", task.getSKUTaskDescription());
+    }
+
+    @Test
+    public void editSKUTask_outOfBoundsIndex_throwsExceptions() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-OOB", Priority.HIGH, "2026-01-01", "Task 1");
+        assertThrows(Throwable.class, () -> taskList.editSKUTask(2, "2026-02-02", null, null));
+    }
+
+    // --- Boundaries for markTask and unmarkTask ---
+    
+    @Test
+    public void markTask_validIndex_marksTask() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-M", Priority.HIGH, "2026-01-01");
+        taskList.markTask(1);
+        assertTrue(taskList.getSKUTaskList().get(0).isDone());
+    }
+
+    @Test
+    public void markTask_outOfBoundsIndex_throwsExceptions() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-M", Priority.HIGH, "2026-01-01");
+        assertThrows(Throwable.class, () -> taskList.markTask(2));
+    }
+
+    @Test
+    public void unmarkTask_validIndex_unmarksTask() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-U", Priority.HIGH, "2026-01-01");
+        taskList.markTask(1);
+        taskList.unmarkTask(1);
+        assertFalse(taskList.getSKUTaskList().get(0).isDone());
+    }
+
+    @Test
+    public void unmarkTask_outOfBoundsIndex_throwsExceptions() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("SKU-U", Priority.HIGH, "2026-01-01");
+        assertThrows(Throwable.class, () -> taskList.unmarkTask(0));
+    }
+
+    @Test
+    public void deleteSKUTask_nullID_throwsAssertionError() {
+        SKUTaskList taskList = new SKUTaskList();
+        assertThrows(AssertionError.class, () -> taskList.deleteSKUTask(null));
+    }
+
+    @Test
+    public void deleteSKUTask_emptyID_throwsAssertionError() {
+        SKUTaskList taskList = new SKUTaskList();
+        assertThrows(AssertionError.class, () -> taskList.deleteSKUTask("   "));
+    }
+
+    @Test
+    public void addAndImmediatelyDelete_listIsEmpty() {
+        SKUTaskList taskList = new SKUTaskList();
+        taskList.addSKUTask("TEMP", Priority.LOW, "2025-01-01", "temp");
+        assertEquals(1, taskList.getSKUTaskList().size());
+        taskList.deleteSKUTask("TEMP");
+        assertTrue(taskList.getSKUTaskList().isEmpty());
     }
 }

@@ -166,6 +166,8 @@ public class SKUTask {
 
     /**
      * Marks this task as done.
+     * caller must verify the task is not already done.
+     * This is enforced by the command layer.
      */
     public void mark() {
         assert !isDone : "Task is already marked as done.";
@@ -175,6 +177,8 @@ public class SKUTask {
 
     /**
      * Marks this task as not done.
+     * caller must verify the task is already done.
+     * This is enforced by the command layer.
      */
     public void unmark() {
         assert isDone : "Task is already marked as not done.";
