@@ -94,4 +94,55 @@ class ViewSKUTaskTest {
 
         assertTrue(results.isEmpty());
     }
+
+    @Test
+    public void listTasks_emptySkuList_returnsEmptyList() {
+        SKUList emptyList = new SKUList();
+        List<SKUTask> results = viewer.listTasks(emptyList);
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void listTasks_priorityFilterCaseInsensitive_returnsCorrectTasks() {
+        viewer.setPriorityFilter("high");
+        List<SKUTask> results = viewer.listTasks(skuList);
+
+        assertEquals(2, results.size());
+        assertTrue(results.stream().allMatch(t -> t.getSKUTaskPriority() == Priority.HIGH));
+    }
+
+    @Test
+    public void listTasks_multipleFiltersSet_prioritizesSkuFilter() {
+
+        viewer.setSkuFilter("PALLET-B");
+        viewer.setPriorityFilter("MEDIUM");
+        List<SKUTask> results = viewer.listTasks(skuList);
+
+        assertEquals(1, results.size());
+        assertEquals("PALLET-B", results.get(0).getSKUTaskID());
+    }
+    @Test
+    public void listTasks_locationFilterFromFarEnd_sortsCorrectly() {
+        // Origin C3 (2,2).
+        // PALLET-B at B1 (1,0) dist: |2-1| + |2-0| = 3
+        // PALLET-A at A1 (0,0) dist: |2-0| + |2-0| = 4
+        viewer.setLocationFilter("C3");
+        List<SKUTask> results = viewer.listTasks(skuList);
+
+        // PALLET-B should come first now as it is closer to C3 than A1 is
+        assertEquals("PALLET-B", results.get(0).getSKUTaskID());
+        assertEquals("PALLET-A", results.get(2).getSKUTaskID());
+    }
+
+    @Test
+    public void listTasks_clearingFilters_returnsAllTasksAgain() {
+        viewer.setSkuFilter("PALLET-B");
+        viewer.listTasks(skuList); // Run once with filter
+
+        viewer.setSkuFilter(null); // Clear filter
+        List<SKUTask> results = viewer.listTasks(skuList);
+
+        assertEquals(3, results.size());
+    }
+
 }
