@@ -10,7 +10,7 @@ Participant ":CommandHelper" as helper LOGIC_COLOR
 Participant ":SKUList" as skuList MODEL_COLOR
 Participant ":SKU" as sku MODEL_COLOR_T1
 Participant ":SKUTaskList" as taskList MODEL_COLOR_T2
-Participant ":TaskSorter" as sorter LOGIC_COLOR
+Participant "<<class>>\nTaskSorter" as taskSorterClass LOGIC_COLOR
 
 user -> ui ++ : "sorttasks n/PALLET-A s/date o/ascending"
 ui -> parser ++ : parse(...)
@@ -24,7 +24,7 @@ helper -> skuList ++ : findByID("PALLET-A")
 return sku
 return sku
 
-handler -> handler ++ : TaskSorter.isValidSortField("date")
+handler -> taskSorterClass ++ : isValidSortField("date")
 return true
 
 handler -> sku ++ : getSKUTaskList()

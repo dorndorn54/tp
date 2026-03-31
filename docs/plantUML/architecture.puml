@@ -94,13 +94,13 @@ class Export STORAGE_COLOR {
 ' -- UI layer --
 ItemTasker -down-> CommandRunner
 ItemTasker -right-> Ui
-ItemTasker -left-> Parser
+ItemTasker ..> Parser
 
 ' -- Logic layer --
 CommandRunner -down-> SKUCommandHandler
 CommandRunner -down-> TaskCommandHandler
 CommandRunner -down-> ViewCommandHandler
-CommandRunner -left-> Storage
+CommandRunner ..> Storage
 CommandRunner ..> Export
 
 ' -- Shared utilities --
