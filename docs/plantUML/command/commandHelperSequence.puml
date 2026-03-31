@@ -1,0 +1,102 @@
+@startuml
+!include ../style.puml
+
+Participant "caller" as caller LOGIC_COLOR
+Participant ":CommandHelper" as helper LOGIC_COLOR_T1
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":SKUTask" as task MODEL_COLOR_T2
+Participant ":Ui" as ui UI_COLOR
+
+== findSkuOrError ==
+
+caller -> helper ++ : findSkuOrError(skuList, skuId)
+
+helper -> skuList ++ : findByID(skuId)
+return sku / null
+
+alt sku == null
+    helper -> ui : printError("SKU not found: " + skuId)
+end
+
+return sku / null
+
+== parseLocation ==
+
+caller -> helper ++ : parseLocation(locationStr)
+
+alt valid Location enum string
+    note right : returns Location enum value
+else IllegalArgumentException
+    helper -> ui : printError("Invalid location ...")
+    note right : returns null
+end
+
+return location / null
+
+== parsePriority ==
+
+caller -> helper ++ : parsePriority(priorityStr)
+
+alt priorityStr == null
+    note right : returns null
+else valid Priority enum string
+    note right : returns Priority enum value
+else IllegalArgumentException
+    helper -> ui : printError("Invalid priority ...")
+    note right : returns null
+end
+
+return priority / null
+
+== parsePriorityOrDefault ==
+
+caller -> helper ++ : parsePriorityOrDefault(cmd)
+
+helper -> cmd ++ : hasArg("p")
+return hasPFlag
+
+alt no "p" flag present
+    note right : returns Priority.HIGH
+else "p" flag present
+    helper -> cmd ++ : getArg("p")
+    return priorityStr
+
+    helper -> helper ++ : parsePriority(priorityStr)
+    return priority / null
+end
+
+return priority / null
+
+== parseIndex ==
+
+caller -> helper ++ : parseIndex(indexStr)
+
+alt valid integer string
+    note right : returns parsed int
+else NumberFormatException
+    helper -> ui : printError("Task index must be a number ...")
+    note right : returns -1
+end
+
+return index / -1
+
+== matchesDescription ==
+
+caller -> helper ++ : matchesDescription(task, descFilter)
+
+alt descFilter == null
+    note right : returns true
+else
+    helper -> task ++ : getSKUTaskDescription()
+    return description
+
+    alt description == null
+        note right : returns false
+    else
+        note right : returns description.toLowerCase().contains(descFilter)
+    end
+end
+
+return boolean
+@enduml

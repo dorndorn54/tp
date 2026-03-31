@@ -2,7 +2,7 @@
 !include ../style.puml
 skinparam arrowThickness 1.1
 skinparam classAttributeIconSize 0
-hide circle
+
 class Ui UI_COLOR {
     - {static} DIVIDER : String
     - {static} LOGO : String
@@ -17,12 +17,38 @@ class Ui UI_COLOR {
     + {static} printUnknownCommand(command : String) : void
     + {static} printHelp() : void
     + {static} printDivider() : void
+    + {static} printTasksForSku(skuId : String, tasks : List<SKUTask>) : void
+    + {static} printTasksByPriority(priority : String, tasks : List<SKUTask>) : void
+    + {static} printTasksByDistance(fromLocation : String, formattedEntries : List<String>) : void
+    + {static} printAllTasks(skuList : SKUList) : void
+    + {static} printSearchHeader() : void
+    + {static} printSearchFooter(results : List<String>) : void
 }
 
-class CommandRunner LOGIC_COLOR {
-    + run(cmd : ParsedCommand) : void
+class SKUList MODEL_COLOR {
+    + getSKUList() : List<SKU>
+    + isEmpty() : boolean
 }
 
-CommandRunner ..> Ui : uses
+class SKU MODEL_COLOR {
+    + getSKUID() : String
+    + getSKUTaskList() : SKUTaskList
+}
 
+class SKUTask MODEL_COLOR_T2 {
+    + getSKUTaskID() : String
+}
+
+class ItemTasker LOGIC_COLOR {
+    + {static} main(args : String[]) : void
+}
+
+class CommandRunner LOGIC_COLOR_T2 {
+}
+
+Ui ..> SKUList : <<uses>>
+Ui ..> SKU : <<uses>>
+Ui ..> SKUTask : <<uses>>
+ItemTasker ..> Ui : <<uses>>
+CommandRunner ..> Ui : <<uses>>
 @enduml

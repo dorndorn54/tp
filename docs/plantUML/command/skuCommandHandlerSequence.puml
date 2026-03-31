@@ -1,0 +1,104 @@
+@startuml
+!include ../style.puml
+
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":SkuCommandHandler" as handler LOGIC_COLOR_T2
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
+Participant ":CommandHelper" as helper LOGIC_COLOR_T1
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":SKU" as sku MODEL_COLOR
+Participant ":Ui" as ui UI_COLOR
+
+== handleAddSku ==
+
+runner -> handler ++ : handleAddSku(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("l")
+return skuId, locationStr
+
+alt skuId == null or locationStr == null
+    handler -> ui : printError("Usage: addsku n/SKU_ID l/LOCATION ...")
+    return
+end
+
+handler -> helper ++ : parseLocation(locationStr)
+return location / null
+
+alt location == null
+    return
+end
+
+handler -> skuList ++ : findByID(skuId)
+return existing / null
+
+alt SKU already exists
+    handler -> ui : printError("SKU already exists: " + skuId)
+    return
+end
+
+handler -> skuList ++ : addSKU(skuId, location)
+return
+
+handler -> ui : printSuccess("Added SKU [" + skuId + "] at location " + location)
+
+return
+
+== handleEditSku ==
+
+runner -> handler ++ : handleEditSku(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("l")
+return skuId, locationStr
+
+alt skuId == null or locationStr == null
+    handler -> ui : printError("Usage: editsku n/SKU_ID l/NEW_LOCATION")
+    return
+end
+
+handler -> helper ++ : findSkuOrError(skuList, skuId)
+return targetSku / null
+
+alt targetSku == null
+    return
+end
+
+handler -> helper ++ : parseLocation(locationStr)
+return newLocation / null
+
+alt newLocation == null
+    return
+end
+
+handler -> sku ++ : setLocation(newLocation)
+return
+
+handler -> ui : printSuccess("Updated location of SKU [" + skuId + "] to " + newLocation)
+
+return
+
+== handleDeleteSku ==
+
+runner -> handler ++ : handleDeleteSku(cmd)
+
+handler -> cmd ++ : getArg("n")
+return skuId
+
+alt skuId == null
+    handler -> ui : printError("Usage: deletesku n/SKU_ID")
+    return
+end
+
+handler -> helper ++ : findSkuOrError(skuList, skuId)
+return targetSku / null
+
+alt targetSku == null
+    return
+end
+
+handler -> skuList ++ : deleteSKU(skuId)
+return
+
+handler -> ui : printSuccess("Deleted SKU [" + skuId + "] and all its tasks.")
+
+return
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class SkuCommandHandler LOGIC_COLOR_T2 {
+    - skuList : SKUList
+    + SkuCommandHandler(skuList : SKUList)
+    + handleAddSku(cmd : ParsedCommand) : void
+    + handleEditSku(cmd : ParsedCommand) : void
+    + handleDeleteSku(cmd : ParsedCommand) : void
+}
+
+class ParsedCommand LOGIC_COLOR_T1 {
+    + getArg(key : String) : String
+}
+
+class CommandHelper LOGIC_COLOR_T1 {
+    + {static} findSkuOrError(skuList : SKUList, skuId : String) : SKU
+    + {static} parseLocation(locationStr : String) : Location
+}
+
+class SKUList MODEL_COLOR {
+    + findByID(skuID : String) : SKU
+    + addSKU(skuID : String, location : Location) : void
+    + deleteSKU(skuID : String) : void
+}
+
+class SKU MODEL_COLOR {
+    + setLocation(location : Location) : void
+}
+
+class Location MODEL_COLOR {
+    A1, A2, A3
+    B1, B2, B3
+    C1, C2, C3
+}
+
+class Ui UI_COLOR {
+    + {static} printError(msg : String) : void
+    + {static} printSuccess(msg : String) : void
+}
+
+SkuCommandHandler -right-> "1" SKUList : skuList
+SkuCommandHandler ..> ParsedCommand : <<uses>>
+SkuCommandHandler ..> CommandHelper : <<uses>>
+SkuCommandHandler ..> SKU : <<uses>>
+SkuCommandHandler ..> Location : <<uses>>
+SkuCommandHandler ..> Ui : <<uses>>
+@enduml

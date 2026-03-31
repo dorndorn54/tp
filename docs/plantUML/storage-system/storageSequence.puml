@@ -1,0 +1,71 @@
+@startuml
+!include ../style.puml
+
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":Storage" as storage STORAGE_COLOR
+Participant ":GsonBuilder" as gsonBuilder LOGIC_COLOR_T1
+Participant ":Gson" as gson LOGIC_COLOR_T1
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant "storage.json" as file UI_COLOR
+
+== saveState ==
+
+runner -> storage ++ : saveState(skuList)
+
+storage -> storage : dataDir = new File("Data")
+
+alt Data/ directory does not exist
+    storage -> storage : dataDir.mkdirs()
+end
+
+storage -> gsonBuilder ++ : new GsonBuilder().setPrettyPrinting().create()
+return gson
+
+storage -> file ++ : new FileWriter(FILE_PATH)
+return writer
+
+storage -> gson ++ : toJson(skuList, writer)
+return
+
+storage -> file : close writer (try-with-resources)
+
+alt IOException
+    storage -> storage : println("Error saving: " + e.getMessage())
+end
+
+return
+
+== loadState ==
+
+runner -> storage ++ : loadState(skuList)
+
+storage -> storage : file = new File(FILE_PATH)
+
+alt file does not exist
+    return
+end
+
+storage -> gson ++ : new Gson()
+return gson
+
+storage -> file ++ : new FileReader(FILE_PATH)
+return reader
+
+storage -> gson ++ : fromJson(reader, SKUList.class)
+return loadedSkus
+
+alt loadedSkus != null
+    storage -> skuList ++ : getSKUList().addAll(loadedSkus.getSKUList())
+    return
+end
+
+storage -> file : close reader (try-with-resources)
+
+alt IOException
+    storage -> storage : println("[ERROR] Error loading: ...")
+else JsonSyntaxException
+    storage -> storage : println("[ERROR] Corrupted or outdated JSON format...")
+end
+
+return
+@enduml

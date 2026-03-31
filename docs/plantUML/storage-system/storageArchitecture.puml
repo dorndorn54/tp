@@ -1,0 +1,35 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class Storage STORAGE_COLOR {
+    - {static} FILE_PATH : String
+    + {static} saveState(skuList : SKUList) : void
+    + {static} loadState(skuList : SKUList) : void
+}
+
+class SKUList MODEL_COLOR {
+    + getSKUList() : List<SKU>
+}
+
+class CommandRunner LOGIC_COLOR {
+    + CommandRunner(skuList : SKUList)
+    + run(cmd : ParsedCommand) : void
+}
+
+class Gson LOGIC_COLOR_T1 {
+    + toJson(src : Object, writer : FileWriter) : void
+    + fromJson(reader : FileReader, classOf : Class) : Object
+}
+
+class GsonBuilder LOGIC_COLOR_T1 {
+    + setPrettyPrinting() : GsonBuilder
+    + create() : Gson
+}
+
+Storage ..> SKUList : <<reads / writes>>
+Storage ..> Gson : <<uses>>
+Storage ..> GsonBuilder : <<uses>>
+CommandRunner ..> Storage : <<uses>>
+@enduml

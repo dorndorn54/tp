@@ -1,0 +1,43 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class ItemTasker LOGIC_COLOR {
+    + {static} main(args : String[]) : void
+}
+
+class SKUList MODEL_COLOR {
+}
+
+class Ui UI_COLOR {
+    + Ui()
+    + readInput() : String
+    + {static} printWelcome() : void
+    + {static} printError(message : String) : void
+}
+
+class CommandRunner LOGIC_COLOR_T2 {
+    + CommandRunner(skuList : SKUList)
+    + isRunning() : boolean
+    + run(cmd : ParsedCommand) : void
+}
+
+class Parser LOGIC_COLOR_T1 {
+    + {static} parse(input : String) : ParsedCommand
+}
+
+class ParsedCommand LOGIC_COLOR_T1 {
+}
+
+class ItemTaskerException LOGIC_COLOR_T1 {
+    + getMessage() : String
+}
+
+ItemTasker ..> SKUList : <<creates>>
+ItemTasker ..> Ui : <<creates>>
+ItemTasker ..> CommandRunner : <<creates>>
+ItemTasker ..> Parser : <<uses>>
+ItemTasker ..> ParsedCommand : <<uses>>
+ItemTasker ..> ItemTaskerException : <<catches>>
+@enduml

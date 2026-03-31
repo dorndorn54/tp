@@ -9,10 +9,22 @@ class Parser LOGIC_COLOR_T1 {
     - {static} parseFlags(argsString : String) : Map<String, String>
 }
 
-class ParsedCommand MODEL_COLOR {
-    - commandWord : String
-    - args : Map<String, String>
+class ParsedCommand LOGIC_COLOR_T1 {
+    + ParsedCommand(commandWord : String, args : Map<String, String>)
 }
 
-Parser ..> ParsedCommand : creates
+class InvalidCommandException LOGIC_COLOR_T1 {
+}
+
+class MissingArgumentException LOGIC_COLOR_T1 {
+}
+
+class ItemTasker LOGIC_COLOR {
+    + {static} main(args : String[]) : void
+}
+
+Parser ..> ParsedCommand : <<creates>>
+Parser ..> InvalidCommandException : <<throws>>
+Parser ..> MissingArgumentException : <<throws>>
+ItemTasker ..> Parser : <<uses>>
 @enduml

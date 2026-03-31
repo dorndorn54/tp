@@ -1,0 +1,39 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class ViewMap UI_COLOR {
+    + printTaskMap(fullList : SKUList) : void
+}
+
+class SKUList MODEL_COLOR {
+    + getSKUList() : List<SKU>
+}
+
+class SKU MODEL_COLOR {
+    + getSKUID() : String
+    + getSKULocation() : Location
+    + getSKUTaskList() : SKUTaskList
+}
+
+class SKUTaskList MODEL_COLOR_T2 {
+    + getSize() : int
+}
+
+class Location MODEL_COLOR {
+    + name() : String
+    A1, A2, A3
+    B1, B2, B3
+    C1, C2, C3
+}
+
+class CommandRunner LOGIC_COLOR_T2 {
+}
+
+ViewMap -right-> "1" SKUList : fullList
+ViewMap ..> SKU : <<uses>>
+ViewMap ..> SKUTaskList : <<uses>>
+ViewMap ..> Location : <<uses>>
+CommandRunner ..> ViewMap : <<creates>>
+@enduml

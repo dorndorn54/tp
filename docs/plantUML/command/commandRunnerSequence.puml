@@ -1,0 +1,120 @@
+@startuml
+!include ../style.puml
+
+Participant "Main" as main LOGIC_COLOR
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
+Participant ":SkuCommandHandler" as skuHandler LOGIC_COLOR_T2
+Participant ":TaskCommandHandler" as taskHandler LOGIC_COLOR_T2
+Participant ":ViewCommandHandler" as viewHandler LOGIC_COLOR_T2
+Participant ":Storage" as storage STORAGE_COLOR
+Participant ":ViewMap" as viewMap UI_COLOR
+Participant ":Ui" as ui UI_COLOR
+
+== Constructor ==
+
+main -> runner ++ : new CommandRunner(skuList)
+
+runner -> runner : new SkuCommandHandler(skuList)
+runner -> runner : new TaskCommandHandler(skuList)
+runner -> runner : new ViewCommandHandler(skuList)
+
+runner -> storage ++ : loadState(skuList)
+return
+
+return
+
+== run — SKU commands ==
+
+main -> runner ++ : run(cmd)
+
+runner -> cmd ++ : getCommandWord()
+return commandWord
+
+alt commandWord = "addsku"
+    runner -> skuHandler ++ : handleAddSku(cmd)
+    return
+else commandWord = "editsku"
+    runner -> skuHandler ++ : handleEditSku(cmd)
+    return
+else commandWord = "deletesku"
+    runner -> skuHandler ++ : handleDeleteSku(cmd)
+    return
+end
+
+return
+
+== run — Task commands ==
+
+main -> runner ++ : run(cmd)
+
+runner -> cmd ++ : getCommandWord()
+return commandWord
+
+alt commandWord = "addskutask"
+    runner -> taskHandler ++ : handleAddSkuTask(cmd)
+    return
+else commandWord = "edittask"
+    runner -> taskHandler ++ : handleEditTask(cmd)
+    return
+else commandWord = "deletetask"
+    runner -> taskHandler ++ : handleDeleteTask(cmd)
+    return
+else commandWord = "marktask"
+    runner -> taskHandler ++ : handleMarkTask(cmd)
+    return
+else commandWord = "unmarktask"
+    runner -> taskHandler ++ : handleUnmarkTask(cmd)
+    return
+end
+
+return
+
+== run — View / Utility commands ==
+
+main -> runner ++ : run(cmd)
+
+runner -> cmd ++ : getCommandWord()
+return commandWord
+
+alt commandWord = "listtasks"
+    runner -> viewHandler ++ : handleListTasks(cmd)
+    return
+else commandWord = "find"
+    runner -> viewHandler ++ : handleFind(cmd)
+    return
+else commandWord = "export"
+    runner -> runner ++ : handleExport()
+    return
+else commandWord = "help"
+    runner -> ui : printHelp()
+else commandWord = "viewmap"
+    runner -> viewMap ++ : printTaskMap(skuList)
+    return
+else commandWord = "bye" / "exit"
+    runner -> storage ++ : saveState(skuList)
+    return
+    runner -> ui : printGoodbye()
+    runner -> runner : isRunning = false
+else commandWord = ""
+    note right : no-op
+else unknown
+    runner -> ui : printUnknownCommand(commandWord)
+end
+
+return
+
+== handleExport ==
+
+runner -> runner ++ : handleExport()
+
+runner -> runner : Export.exportToTextFile(skuList)
+
+alt success
+    runner -> ui : printSuccess("Warehouse state exported ...")
+else IOException
+    runner -> ui : printError("Failed to export data: ...")
+end
+
+return
+@enduml

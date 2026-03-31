@@ -1,0 +1,250 @@
+@startuml
+!include ../style.puml
+
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":TaskCommandHandler" as handler LOGIC_COLOR_T2
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
+Participant ":CommandHelper" as helper LOGIC_COLOR_T1
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":SKUTaskList" as taskList MODEL_COLOR_T2
+Participant ":SKUTask" as task MODEL_COLOR_T2
+Participant ":Ui" as ui UI_COLOR
+
+== handleAddSkuTask ==
+
+runner -> handler ++ : handleAddSkuTask(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("d")
+return skuId, dueDate
+
+alt skuId == null or dueDate == null
+    handler -> ui : printError("Usage: addskutask n/SKU_ID d/DUE_DATE ...")
+    return
+end
+
+handler -> skuList ++ : findByID(skuId)
+return targetSku / null
+
+alt targetSku == null
+    handler -> ui : printError("SKU not found: ...")
+    return
+end
+
+handler -> helper ++ : parsePriorityOrDefault(cmd)
+return priority / null
+
+alt priority == null
+    return
+end
+
+handler -> cmd ++ : hasArg("t"), getArg("t")
+return description
+
+handler -> taskList ++ : addSKUTask(skuId, priority, dueDate, description)
+return
+
+handler -> ui : printSuccess("Added task #" + newIndex + " to SKU [" + skuId + "] ...")
+
+return
+
+== handleEditTask ==
+
+runner -> handler ++ : handleEditTask(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("i")
+return skuId, indexStr
+
+alt skuId == null or indexStr == null
+    handler -> ui : printError("Usage: edittask n/SKU_ID i/TASK_INDEX ...")
+    return
+end
+
+handler -> cmd ++ : getArg("d"), getArg("p"), getArg("t")
+return newDate, newPriorityStr, newDesc
+
+alt all three fields null
+    handler -> ui : printError("Provide at least one field to update ...")
+    return
+end
+
+handler -> helper ++ : parseIndex(indexStr)
+return index / -1
+
+alt index == -1
+    return
+end
+
+handler -> helper ++ : findSkuOrError(skuList, skuId)
+return targetSku / null
+
+alt targetSku == null
+    return
+end
+
+handler -> taskList ++ : getSize()
+return size
+
+alt index < 1 or index > size
+    handler -> runner : throw InvalidIndexException
+end
+
+handler -> helper ++ : parsePriority(newPriorityStr)
+return newPriority / null
+
+alt newPriorityStr != null and newPriority == null
+    return
+end
+
+handler -> taskList ++ : editSKUTask(index, newDate, newPriority, newDesc)
+return
+
+handler -> taskList ++ : getSKUTaskList().get(index - 1)
+return updated task
+
+handler -> ui : printSuccess("Updated task #" + index + " ...")
+
+return
+
+== handleDeleteTask ==
+
+runner -> handler ++ : handleDeleteTask(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("i")
+return skuId, indexStr
+
+alt skuId == null or indexStr == null
+    handler -> ui : printError("Usage: deletetask n/SKU_ID i/TASK_INDEX")
+    return
+end
+
+handler -> helper ++ : parseIndex(indexStr)
+return index / -1
+
+alt index == -1
+    return
+end
+
+handler -> helper ++ : findSkuOrError(skuList, skuId)
+return targetSku / null
+
+alt targetSku == null
+    return
+end
+
+handler -> taskList ++ : getSize()
+return size
+
+alt index < 1 or index > size
+    handler -> ui : printError("Task index out of range ...")
+    return
+end
+
+handler -> taskList ++ : deleteSKUTaskByIndex(index)
+return
+
+handler -> ui : printSuccess("Deleted task #" + index + " from SKU [" + skuId + "].")
+
+return
+
+== handleMarkTask ==
+
+runner -> handler ++ : handleMarkTask(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("i")
+return skuId, indexStr
+
+alt skuId == null or indexStr == null
+    handler -> ui : printError("Usage: marktask n/SKU_ID i/TASK_INDEX")
+    return
+end
+
+handler -> helper ++ : parseIndex(indexStr)
+return index / -1
+
+alt index == -1
+    return
+end
+
+handler -> helper ++ : findSkuOrError(skuList, skuId)
+return targetSku / null
+
+alt targetSku == null
+    return
+end
+
+handler -> taskList ++ : getSize()
+return size
+
+alt index < 1 or index > size
+    handler -> runner : throw InvalidIndexException
+end
+
+handler -> taskList ++ : getSKUTaskList().get(index - 1)
+return task
+
+handler -> task ++ : isDone()
+return isDone
+
+alt isDone == true
+    handler -> ui : printInfo("Task #" + index + " is already marked as done.")
+    return
+end
+
+handler -> taskList ++ : markTask(index)
+return
+
+handler -> ui : printSuccess("Marked task #" + index + " as done ...")
+
+return
+
+== handleUnmarkTask ==
+
+runner -> handler ++ : handleUnmarkTask(cmd)
+
+handler -> cmd ++ : getArg("n"), getArg("i")
+return skuId, indexStr
+
+alt skuId == null or indexStr == null
+    handler -> ui : printError("Usage: unmarktask n/SKU_ID i/TASK_INDEX")
+    return
+end
+
+handler -> helper ++ : parseIndex(indexStr)
+return index / -1
+
+alt index == -1
+    return
+end
+
+handler -> helper ++ : findSkuOrError(skuList, skuId)
+return targetSku / null
+
+alt targetSku == null
+    return
+end
+
+handler -> taskList ++ : getSize()
+return size
+
+alt index < 1 or index > size
+    handler -> runner : throw InvalidIndexException
+end
+
+handler -> taskList ++ : getSKUTaskList().get(index - 1)
+return task
+
+handler -> task ++ : isDone()
+return isDone
+
+alt isDone == false
+    handler -> ui : printInfo("Task #" + index + " is already unmarked.")
+    return
+end
+
+handler -> taskList ++ : unmarkTask(index)
+return
+
+handler -> ui : printSuccess("Unmarked task #" + index + " ...")
+
+return
+@enduml

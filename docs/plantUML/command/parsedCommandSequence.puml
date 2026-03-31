@@ -1,0 +1,45 @@
+@startuml
+!include ../style.puml
+
+Participant "parser" as parser LOGIC_COLOR
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":SkuCommandHandler" as skuHandler LOGIC_COLOR_T2
+Participant ":CommandHelper" as helper LOGIC_COLOR_T1
+
+== Construction ==
+
+parser -> cmd ++ : new ParsedCommand(commandWord, args)
+return
+
+== getCommandWord ==
+
+runner -> cmd ++ : getCommandWord()
+return commandWord
+
+== getArg ==
+
+skuHandler -> cmd ++ : getArg("n")
+
+note right : key is lowercased before lookup
+
+alt key present in args map
+    note right : returns args.get("n")
+else key absent
+    note right : returns null
+end
+
+return value / null
+
+== hasArg ==
+
+helper -> cmd ++ : hasArg("p")
+
+alt key present in args map
+    note right : returns true
+else key absent
+    note right : returns false
+end
+
+return boolean
+@enduml

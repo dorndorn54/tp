@@ -1,33 +1,56 @@
 @startuml
 !include ../style.puml
-skinparam arrowThickness 1.1
-skinparam classAttributeIconSize 0
-hide circle
 
-Actor User as user USER_COLOR
-Participant ":Ui" as ui UI_COLOR
+Participant ":ItemTasker" as app LOGIC_COLOR
 Participant ":Parser" as parser LOGIC_COLOR_T1
-Participant ":ParsedCommand" as cmd MODEL_COLOR
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
 
-user -> ui ++ : "addsku n/P-A l/A1"
-ui -> parser ++ : parse(input)
+== parse ==
 
-parser -> parser ++ : trim and split input
-return commandWord, argsString
+app -> parser ++ : parse(input)
 
-alt argsString is not empty
-    parser -> parser ++ : parseFlags(argsString)
+note right : assert input != null
 
-    loop for each token
-        parser -> parser ++ : split at slash, extract key/value
-        return key, value
-    end
+parser -> parser : trimmed = input.trim()
 
-    return Map<String, String>
+alt trimmed.isEmpty()
+    parser -> cmd ++ : new ParsedCommand("", new HashMap<>())
+    return
+    return empty ParsedCommand
 end
 
-parser -> cmd ** : new ParsedCommand(commandWord, args)
+parser -> parser : parts = trimmed.split("\\s+", 2)
+parser -> parser : commandWord = parts[0].toLowerCase()
 
-return cmd : ParsedCommand
-return cmd : ParsedCommand
+alt parts.length > 1
+    parser -> parser ++ : parseFlags(parts[1].trim())
+    return args map
+else no flags present
+    parser -> parser : args = new HashMap<>()
+end
+
+parser -> cmd ++ : new ParsedCommand(commandWord, args)
+return
+
+return ParsedCommand
+
+== parseFlags ==
+
+app -> parser ++ : parseFlags(argsString)
+
+parser -> parser : tokens = argsString.split("(?<=\\S)\\s+(?=[a-zA-Z]/)")
+
+loop for each token in tokens
+    parser -> parser : slashIdx = token.indexOf('/')
+
+    alt slashIdx > 0
+        parser -> parser : key = token.substring(0, slashIdx).trim().toLowerCase()
+        parser -> parser : value = token.substring(slashIdx + 1).trim()
+        parser -> parser : args.put(key, value)
+    else no slash found
+        note right : token ignored (no valid flag)
+    end
+end
+
+return args map
 @enduml

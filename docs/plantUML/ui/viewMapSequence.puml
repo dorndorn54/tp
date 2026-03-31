@@ -1,0 +1,49 @@
+@startuml
+!include ../style.puml
+
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":ViewMap" as viewMap UI_COLOR
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":SKU" as sku MODEL_COLOR
+Participant ":SKUTaskList" as taskList MODEL_COLOR_T2
+
+== printTaskMap ==
+
+runner -> viewMap ++ : printTaskMap(fullList)
+
+note right : assert fullList != null
+
+viewMap -> viewMap : counts = new HashMap<String, Integer>()
+
+viewMap -> skuList ++ : getSKUList()
+return List<SKU>
+
+loop for each SKU in fullList
+    note right : assert sku.getSKULocation() != null
+
+    viewMap -> sku ++ : getSKULocation().name()
+    return loc
+
+    viewMap -> sku ++ : getSKUTaskList()
+    return taskList
+
+    viewMap -> taskList ++ : getSize()
+    return size
+
+    viewMap -> viewMap : counts.put(loc, counts.getOrDefault(loc, 0) + size)
+end
+
+viewMap -> viewMap : println("&#45;&#45;&#45; Warehouse Task Distribution (A1-C3) &#45;&#45;&#45;")
+
+loop row = 'A' to 'C'
+    loop col = 1 to 3
+        viewMap -> viewMap : loc = "" + row + col
+        viewMap -> viewMap : printf("[%s: %02d] ", loc, counts.getOrDefault(loc, 0))
+    end
+    viewMap -> viewMap : println()
+end
+
+viewMap -> viewMap : println("&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;")
+
+return
+@enduml

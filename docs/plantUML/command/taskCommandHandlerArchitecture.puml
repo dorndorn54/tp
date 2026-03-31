@@ -1,0 +1,70 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class TaskCommandHandler LOGIC_COLOR_T2 {
+    - skuList : SKUList
+    + TaskCommandHandler(skuList : SKUList)
+    + handleAddSkuTask(cmd : ParsedCommand) : void
+    + handleEditTask(cmd : ParsedCommand) : void
+    + handleDeleteTask(cmd : ParsedCommand) : void
+    + handleMarkTask(cmd : ParsedCommand) : void
+    + handleUnmarkTask(cmd : ParsedCommand) : void
+}
+
+class ParsedCommand LOGIC_COLOR_T1 {
+    + getArg(key : String) : String
+    + hasArg(key : String) : boolean
+}
+
+class CommandHelper LOGIC_COLOR_T1 {
+    + {static} findSkuOrError(skuList : SKUList, skuId : String) : SKU
+    + {static} parsePriority(priorityStr : String) : Priority
+    + {static} parsePriorityOrDefault(cmd : ParsedCommand) : Priority
+    + {static} parseIndex(indexStr : String) : int
+}
+
+class SKUList MODEL_COLOR {
+    + findByID(skuID : String) : SKU
+}
+
+class SKU MODEL_COLOR {
+    + getSKUTaskList() : SKUTaskList
+}
+
+class SKUTaskList MODEL_COLOR_T2 {
+    + addSKUTask(skuId : String, priority : Priority, dueDate : String, desc : String) : void
+    + editSKUTask(index : int, date : String, priority : Priority, desc : String) : void
+    + deleteSKUTaskByIndex(index : int) : void
+    + markTask(index : int) : void
+    + unmarkTask(index : int) : void
+    + getSize() : int
+    + getSKUTaskList() : ArrayList<SKUTask>
+}
+
+class SKUTask MODEL_COLOR_T2 {
+    + isDone() : boolean
+}
+
+class Priority MODEL_COLOR_T2 {
+    HIGH
+    MEDIUM
+    LOW
+}
+
+class Ui UI_COLOR {
+    + {static} printError(msg : String) : void
+    + {static} printSuccess(msg : String) : void
+    + {static} printInfo(msg : String) : void
+}
+
+TaskCommandHandler -right-> "1" SKUList : skuList
+TaskCommandHandler ..> ParsedCommand : <<uses>>
+TaskCommandHandler ..> CommandHelper : <<uses>>
+TaskCommandHandler ..> SKU : <<uses>>
+TaskCommandHandler ..> SKUTaskList : <<uses>>
+TaskCommandHandler ..> SKUTask : <<uses>>
+TaskCommandHandler ..> Priority : <<uses>>
+TaskCommandHandler ..> Ui : <<uses>>
+@enduml

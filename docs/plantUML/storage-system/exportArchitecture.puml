@@ -1,0 +1,40 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class Export STORAGE_COLOR {
+    - {static} EXPORT_FILE_PATH : String
+    + {static} exportToTextFile(skuList : SKUList) : void
+}
+
+class SKUList MODEL_COLOR {
+    + getSKUList() : List<SKU>
+    + isEmpty() : boolean
+}
+
+class SKU MODEL_COLOR {
+    + getSKUID() : String
+    + getSKULocation() : Location
+    + getSKUTaskList() : SKUTaskList
+}
+
+class SKUTaskList MODEL_COLOR_T2 {
+    + getSKUTaskList() : ArrayList<SKUTask>
+    + isEmpty() : boolean
+}
+
+class SKUTask MODEL_COLOR_T2 {
+    + toString() : String
+}
+
+class CommandRunner LOGIC_COLOR {
+    - handleExport() : void
+}
+
+Export ..> SKUList : <<reads>>
+Export ..> SKU : <<reads>>
+Export ..> SKUTaskList : <<reads>>
+Export ..> SKUTask : <<reads>>
+CommandRunner ..> Export : <<uses>>
+@enduml

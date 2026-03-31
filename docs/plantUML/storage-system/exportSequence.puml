@@ -1,0 +1,70 @@
+@startuml
+!include ../style.puml
+
+Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":Export" as export STORAGE_COLOR
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":SKU" as sku MODEL_COLOR
+Participant ":SKUTaskList" as taskList MODEL_COLOR_T2
+Participant ":SKUTask" as task MODEL_COLOR_T2
+Participant "ItemTasker_Export.txt" as file UI_COLOR
+
+== exportToTextFile ==
+
+runner -> export ++ : exportToTextFile(skuList)
+
+export -> export : dataDir = new File("Data")
+
+alt Data/ directory does not exist
+    export -> export : dataDir.mkdirs()
+end
+
+export -> file ++ : new FileWriter(EXPORT_FILE_PATH)
+return writer
+
+export -> file : write header banner
+
+export -> skuList ++ : isEmpty()
+return isEmpty
+
+alt skuList is empty
+    export -> file : write "The warehouse is currently empty..."
+    return
+end
+
+export -> skuList ++ : getSKUList()
+return List<SKU>
+
+loop for each SKU in skuList
+    export -> sku ++ : getSKUID(), getSKULocation()
+    return skuId, location
+
+    export -> file : write "SKU: [" + skuId + "] | Location: " + location
+
+    export -> sku ++ : getSKUTaskList()
+    return taskList
+
+    export -> taskList ++ : isEmpty()
+    return isEmpty
+
+    alt no tasks assigned
+        export -> file : write "  -> No tasks assigned."
+    else has tasks
+        export -> taskList ++ : getSKUTaskList()
+        return List<SKUTask>
+
+        loop for each SKUTask (numbered)
+            export -> task ++ : toString()
+            return taskString
+
+            export -> file : write "  " + taskNumber + ". " + taskString
+        end
+    end
+
+    export -> file : write separator line
+end
+
+export -> file : close writer (try-with-resources)
+
+return
+@enduml

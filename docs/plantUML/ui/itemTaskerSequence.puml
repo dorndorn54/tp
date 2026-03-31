@@ -1,0 +1,56 @@
+@startuml
+!include ../style.puml
+
+Participant "main" as main LOGIC_COLOR
+Participant ":ItemTasker" as app LOGIC_COLOR
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":Ui" as ui UI_COLOR
+Participant ":CommandRunner" as runner LOGIC_COLOR_T2
+Participant ":Parser" as parser LOGIC_COLOR_T1
+Participant ":ParsedCommand" as cmd LOGIC_COLOR_T1
+
+== Startup ==
+
+main -> app ++ : main(args)
+
+app -> skuList ++ : new SKUList()
+return
+
+app -> ui ++ : new Ui()
+return
+
+app -> runner ++ : new CommandRunner(skuList)
+return
+
+app -> ui : printWelcome()
+
+== Main Loop ==
+
+loop runner.isRunning() == true
+
+    app -> runner ++ : isRunning()
+    return true
+
+    app -> ui ++ : readInput()
+    return input
+
+    app -> parser ++ : parse(input)
+    return cmd
+
+    app -> runner ++ : run(cmd)
+
+    alt ItemTaskerException thrown
+        app -> ui : printError(e.getMessage())
+    else normal execution
+        return
+    end
+
+end
+
+== Exit ==
+
+app -> runner ++ : isRunning()
+return false
+
+return
+@enduml

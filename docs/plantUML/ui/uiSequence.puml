@@ -1,39 +1,151 @@
 @startuml
 !include ../style.puml
-skinparam arrowThickness 1.1
-skinparam classAttributeIconSize 0
-hide circle
 
-Actor User as user USER_COLOR
+Participant "caller" as caller LOGIC_COLOR
 Participant ":Ui" as ui UI_COLOR
-Participant ":Parser" as parser LOGIC_COLOR_T1
-Participant ":CommandRunner" as runner LOGIC_COLOR
+Participant ":SKUList" as skuList MODEL_COLOR
+Participant ":SKU" as sku MODEL_COLOR
+Participant ":SKUTaskList" as taskList MODEL_COLOR_T2
 
-ui -> ui ++ : printWelcome()
+== Construction / readInput ==
+
+caller -> ui ++ : new Ui()
+ui -> ui : scanner = new Scanner(System.in)
 return
 
-loop while runner.isRunning()
-    ui -> user : "> " (prompt)
-    user -> ui ++ : readInput()
-    return input : String
+caller -> ui ++ : readInput()
+ui -> ui : System.out.print("> ")
+ui -> ui : scanner.nextLine().trim()
+return input string
 
-    ui -> parser ++ : parse(input)
-    return cmd : ParsedCommand
+== Startup / Shutdown messages ==
 
-    ui -> runner ++ : run(cmd)
+caller -> ui : printWelcome()
+note right : prints DIVIDER, LOGO, app name, hint line
 
-    alt valid command
-        runner -> ui : printSuccess(message)
-    else unknown command
-        runner -> ui : printUnknownCommand(commandWord)
-    else error occurred
-        runner -> ui : printError(message)
-    else bye / exit
-        runner -> ui : printGoodbye()
-        runner -> runner : isRunning = false
-    end
+caller -> ui : printGoodbye()
+note right : prints DIVIDER, goodbye message, DIVIDER
 
-    return
+== Status messages ==
+
+caller -> ui : printSuccess(message)
+note right : prints " [OK] " + message
+
+caller -> ui : printError(message)
+note right : prints " [ERROR] " + message
+
+caller -> ui : printInfo(message)
+note right : prints " [INFO] " + message
+
+caller -> ui : printUnknownCommand(command)
+note right : prints " [ERROR] Unknown command: '" + command + "'..."
+
+== printAllTasks ==
+
+caller -> ui ++ : printAllTasks(skuList)
+
+ui -> ui : println(" All tasks:")
+ui -> ui : printDivider()
+
+ui -> skuList ++ : isEmpty()
+return isEmpty
+
+alt skuList is empty
+    ui -> ui : printInfo("No SKUs registered yet.")
 end
 
+ui -> skuList ++ : getSKUList()
+return List<SKU>
+
+loop for each SKU in skuList
+    ui -> sku ++ : getSKUID()
+    return skuId
+
+    ui -> ui : println(" SKU [" + skuId + "]:")
+
+    ui -> sku ++ : getSKUTaskList().isEmpty()
+    return isEmpty
+
+    alt task list empty
+        ui -> ui : println("   No tasks for this SKU.")
+    else
+        ui -> taskList ++ : printSKUTaskList()
+        return
+    end
+end
+
+alt no tasks found across all SKUs
+    ui -> ui : printInfo("No tasks in the system yet.")
+end
+
+ui -> ui : printDivider()
+return
+
+== printTasksForSku ==
+
+caller -> ui ++ : printTasksForSku(skuId, tasks)
+
+ui -> ui : println(" Tasks for SKU [" + skuId + "]:")
+ui -> ui : printDivider()
+
+loop for each task in tasks (indexed)
+    ui -> ui : println((i+1) + ". " + task)
+end
+
+ui -> ui : printDivider()
+return
+
+== printTasksByPriority ==
+
+caller -> ui ++ : printTasksByPriority(priority, tasks)
+
+ui -> ui : println(" Tasks with priority [" + priority + "]:")
+ui -> ui : printDivider()
+
+alt tasks is empty
+    ui -> ui : printInfo("No tasks found with priority: ...")
+else
+    loop for each task in tasks
+        ui -> ui : println("  [SKU: " + task.getSKUTaskID() + "] " + task)
+    end
+end
+
+ui -> ui : printDivider()
+return
+
+== printTasksByDistance ==
+
+caller -> ui ++ : printTasksByDistance(fromLocation, formattedEntries)
+
+ui -> ui : println(" Tasks sorted by distance from [" + fromLocation + "]:")
+ui -> ui : printDivider()
+
+alt formattedEntries is empty
+    ui -> ui : printInfo("No tasks found.")
+else
+    loop for each entry in formattedEntries
+        ui -> ui : println(entry)
+    end
+end
+
+ui -> ui : printDivider()
+return
+
+== printSearchHeader / printSearchFooter ==
+
+caller -> ui : printSearchHeader()
+note right : prints " Search results:" + DIVIDER
+
+caller -> ui ++ : printSearchFooter(results)
+
+alt results is empty
+    ui -> ui : printInfo("No matching tasks found.")
+else
+    loop for each result in results
+        ui -> ui : println(result)
+    end
+end
+
+ui -> ui : printDivider()
+return
 @enduml

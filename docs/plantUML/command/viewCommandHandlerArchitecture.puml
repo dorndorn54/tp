@@ -1,0 +1,74 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class ViewCommandHandler LOGIC_COLOR_T2 {
+    - skuList : SKUList
+    + ViewCommandHandler(skuList : SKUList)
+    + handleListTasks(cmd : ParsedCommand) : void
+    + handleFind(cmd : ParsedCommand) : void
+    - listTasksForSku(skuId : String) : void
+    - listTasksByPriority(priorityStr : String) : void
+    - listTasksByDistance(locationStr : String) : void
+    - formatDistanceEntries(tasks : List<SKUTask>, locationStr : String) : List<String>
+    - validateFindArgs(skuFilter : String, descFilter : String, indexStr : String) : void
+    - searchTasks(skuFilter : String, descFilter : String, taskIndex : int) : List<String>
+    - searchTasksInSku(sku : SKU, descFilter : String, taskIndex : int, hasSkuFilter : boolean, results : List) : void
+    - searchByIndex(sku : SKU, tasks : ArrayList, descFilter : String, taskIndex : int, hasSkuFilter : boolean, results : List) : void
+    - searchAllTasks(sku : SKU, tasks : ArrayList, descFilter : String, results : List) : void
+    - formatSearchResult(skuId : String, index : int, task : SKUTask) : String
+}
+
+class ParsedCommand LOGIC_COLOR_T1 {
+    + getArg(key : String) : String
+}
+
+class CommandHelper LOGIC_COLOR_T1 {
+    + {static} parseLocation(locationStr : String) : Location
+    + {static} parsePriority(priorityStr : String) : Priority
+    + {static} parseIndex(indexStr : String) : int
+    + {static} matchesDescription(task : SKUTask, descFilter : String) : boolean
+}
+
+class ViewSKUTask LOGIC_COLOR_T1 {
+    + setSkuFilter(skuId : String) : void
+    + setPriorityFilter(priority : String) : void
+    + setLocationFilter(location : String) : void
+    + listTasks(skuList : SKUList) : List<SKUTask>
+    + calculateDistance(task : SKUTask, locationStr : String, skuList : SKUList) : int
+}
+
+class SKUList MODEL_COLOR {
+    + getSKUList() : List<SKU>
+    + findByID(skuID : String) : SKU
+}
+
+class SKU MODEL_COLOR {
+    + getSKUID() : String
+    + getSKUTaskList() : SKUTaskList
+}
+
+class SKUTask MODEL_COLOR_T2 {
+    + getSKUTaskID() : String
+    + getSKUTaskDescription() : String
+}
+
+class Ui UI_COLOR {
+    + {static} printAllTasks(skuList : SKUList) : void
+    + {static} printTasksForSku(skuId : String, tasks : List) : void
+    + {static} printTasksByPriority(priority : String, tasks : List) : void
+    + {static} printTasksByDistance(from : String, entries : List) : void
+    + {static} printSearchHeader() : void
+    + {static} printSearchFooter(results : List) : void
+    + {static} printInfo(msg : String) : void
+}
+
+ViewCommandHandler -right-> "1" SKUList : skuList
+ViewCommandHandler ..> ParsedCommand : <<uses>>
+ViewCommandHandler ..> CommandHelper : <<uses>>
+ViewCommandHandler ..> ViewSKUTask : <<uses>>
+ViewCommandHandler ..> SKU : <<uses>>
+ViewCommandHandler ..> SKUTask : <<uses>>
+ViewCommandHandler ..> Ui : <<uses>>
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+!include ../style.puml
+skinparam arrowThickness 1.1
+skinparam classAttributeIconSize 0
+
+class CommandHelper LOGIC_COLOR_T1 {
+    + {static} findSkuOrError(skuList : SKUList, skuId : String) : SKU
+    + {static} parseLocation(locationStr : String) : Location
+    + {static} parsePriority(priorityStr : String) : Priority
+    + {static} parsePriorityOrDefault(cmd : ParsedCommand) : Priority
+    + {static} parseIndex(indexStr : String) : int
+    + {static} matchesDescription(task : SKUTask, descFilter : String) : boolean
+}
+
+class ParsedCommand LOGIC_COLOR_T1 {
+    + hasArg(key : String) : boolean
+    + getArg(key : String) : String
+}
+
+class SKUList MODEL_COLOR {
+    + findByID(skuID : String) : SKU
+}
+
+class SKU MODEL_COLOR {
+}
+
+class Location MODEL_COLOR {
+    A1, A2, A3
+    B1, B2, B3
+    C1, C2, C3
+}
+
+class Priority MODEL_COLOR_T2 {
+    HIGH
+    MEDIUM
+    LOW
+}
+
+class SKUTask MODEL_COLOR_T2 {
+    + getSKUTaskDescription() : String
+}
+
+class Ui UI_COLOR {
+    + {static} printError(message : String) : void
+}
+
+CommandHelper ..> SKUList : <<uses>>
+CommandHelper ..> SKU : <<returns>>
+CommandHelper ..> Location : <<returns>>
+CommandHelper ..> Priority : <<returns>>
+CommandHelper ..> SKUTask : <<uses>>
+CommandHelper ..> ParsedCommand : <<uses>>
+CommandHelper ..> Ui : <<uses>>
+@enduml
