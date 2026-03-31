@@ -54,7 +54,7 @@ Given below are my contributions to the project.
   * Related PRs: [#16](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/16), [#25](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/25), [#26](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/26), [#56](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/56), [#113](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/113), [#114](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/114), [#136](https://github.com/AY2526S2-CS2113-W09-1/tp/pull/136)
 
 * **Review/mentoring contributions**:
-  * Helped track and resolve a bug related to storage handling ([#92](https://github.com/AY2526S2-CS2113-W09-1/tp/issues/92)).
+  * Helped track and resolve a bug related to distance calculation due to case sensitivity ([#92](https://github.com/AY2526S2-CS2113-W09-1/tp/issues/92)).
   * <!-- TODO: PRs reviewed (with non-trivial review comments): e.g. #12, #32, #19 -->
   * <!-- TODO: Add any other instances of helping team members -->
 
