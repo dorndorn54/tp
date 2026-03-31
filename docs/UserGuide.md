@@ -284,13 +284,51 @@ Example of usage:
 `bye`
 
 ## FAQ
+**Q**: How do I transfer my warehouse data to another computer?  
+**A**: Install the application on the other computer and run it once to generate the default folders. Then, simply overwrite the `Data/storage.json` file it creates with the `storage.json` file from your previous computer.
 
-**Q**: How do I transfer my data to another computer? 
+**Q**: Do I need to manually save my tasks before closing the application?  
+**A**: No. ItemTasker automatically saves your entire inventory and task list to the hard disk whenever you close the application using the `bye` or `exit` commands. Just ensure you exit the app properly instead of force-closing the terminal!
 
-**A**: {your answer here}
+**Q**: Can I use my own custom location names like "Loading-Dock" or "Aisle-12"?  
+**A**: Currently, ItemTasker strictly uses a standardized 3x3 grid system (A1 through C3) to ensure spatial sorting and distance calculations work instantly. You must assign SKUs to one of the 9 predefined sectors.
+
+**Q**: How does the `listtasks l/LOCATION` command calculate distance?  
+**A**: It calculates the "Manhattan Distance" across the warehouse grid. It measures the physical grid steps required to move from your specified location to the SKU's location, bringing the closest tasks to the top of your list so you can clear them efficiently.
+
+**Q**: What happens if I manually edit the `storage.json` file and make a mistake?  
+**A**: If the JSON format becomes invalid, outdated, or corrupted due to manual edits, ItemTasker will print a warning on startup and begin with an empty warehouse to prevent system crashes. It is highly recommended to make a copy of your `storage.json` file before doing any manual tweaking.
+
+**Q**: Can I edit multiple fields of a task at once?  
+**A**: Yes. The `edittask` command accepts any combination of `d/` (due date), `p/` (priority), and `t/` (description) flags simultaneously. Only the fields you specify will be updated. All other fields are preserved.
+
+**Q**: What is the difference between `viewmap` and `status`?  
+**A**: `viewmap` is a visual tool that shows the physical distribution of tasks across the A1-C3 grid. `status` is an analytical tool that provides a breakdown of task completion percentages and identifies which SKUs require immediate attention.
+
 
 ## command Summary
 
-{Give a 'cheat sheet' of commands here}
+| Action | Format | Example |
+|--------|--------|---------|
+| Add SKU | `addsku n/SKU_ID l/LOCATION` | `addsku n/PALLET-A l/B2` |
+| Edit SKU | `editsku n/SKU_ID l/NEW_LOCATION` | `editsku n/PALLET-A l/C3` |
+| Delete SKU | `deletesku n/SKU_ID` | `deletesku n/PALLET-A` |
+| Add task | `addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY] [t/DESCRIPTION]` | `addskutask n/PALLET-A d/2026-06-15 p/HIGH t/Check stock` |
+| Edit task | `edittask n/SKU_ID i/TASK_INDEX [d/DUE_DATE] [p/PRIORITY] [t/DESCRIPTION]` | `edittask n/PALLET-A i/1 d/2026-12-31 p/LOW` |
+| Delete task | `deletetask n/SKU_ID i/TASK_INDEX` | `deletetask n/PALLET-A i/2` |
+| Mark task | `marktask n/SKU_ID i/TASK_INDEX` | `marktask n/PALLET-A i/1` |
+| Unmark task | `unmarktask n/SKU_ID i/TASK_INDEX` | `unmarktask n/PALLET-A i/1` |
+| Sort tasks | `sorttasks n/SKU_ID s/SORT_FIELD [o/ORDER]` | `sorttasks n/PALLET-A s/priority o/descending` |
+| List all tasks | `listtasks` | `listtasks` |
+| List by SKU | `listtasks n/SKU_ID` | `listtasks n/PALLET-A` |
+| List by priority | `listtasks p/PRIORITY` | `listtasks p/HIGH` |
+| List by distance | `listtasks l/LOCATION` | `listtasks l/B2` |
+| Find tasks | `find [n/SKU_ID] [t/DESCRIPTION] [i/TASK_INDEX]` | `find n/PALLET-A t/Check` |
+| View warehouse map | `viewmap` | `viewmap` |
+| Export inventory | `export` | `export` |
+| View status | `status [n/SKU_ID]` | `status n/PALLET-A` |
+| Help | `help` | `help` |
+| Exit | `bye` / `exit` | `bye` |
 
-* Add todo `todo n/TODO_NAME d/DEADLINE`
+
+*Locations: A1 A2 A3 \| B1 B2 B3 \| C1 C2 C3 (3x3 warehouse grid). Priorities: HIGH, MEDIUM, LOW. Sort fields: date, priority, status.*
