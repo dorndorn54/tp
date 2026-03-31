@@ -308,6 +308,9 @@ Example of usage:
 **Q**: Is there a limit to how many SKUs or tasks I can add?  
 **A**: There is no hardcoded limit to the number of SKUs or tasks you can manage. However, performance might begin to slow down if you are managing tens of thousands of tasks simultaneously on older hardware.
 
+**Q**: Can I edit multiple fields of a task at once?  
+**A**: Yes. The `edittask` command accepts any combination of `d/` (due date), `p/` (priority), and `t/` (description) flags simultaneously. Only the fields you specify will be updated. All other fields are preserved.
+
 ## command Summary
 
 | Action | Format | Example |
