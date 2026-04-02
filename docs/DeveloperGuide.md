@@ -586,33 +586,34 @@ This product is targeted at Inventory Managers of Warehouse Distribution Centers
 Enterprise systems are often slow and rigid. ItemTracker provides an agile, local layer for managing immediate warehouse tasks. Managers can log and view "action items" on specific stock items without the latency of connecting the servers of enterprise systems. It ensures that critical tasks, (e.g product inspections) are tracked accordingly.
 
 ## Appendix B: User Stories
-| Version | As a ... | I want to ... | So that I can ... |
-|---------|----------|---------------|-------------------|
-| v1.0 | Inventory Manager | register a new SKU | begin tracking accountability tasks for this particular SKU |
-| v1.0 | Inventory Manager | add a task to a specific SKU | ensure necessary inspections are conducted |
-| v1.0 | Inventory Manager | assign a priority level to each task | clear tasks that need to be performed first |
-| v1.0 | Inventory Manager | mark a task as completed for a specific SKU | track the tasks completed in a given day |
-| v1.0 | Inventory Manager | set due dates for tasks assigned to a SKU | quickly locate specific tasks without browsing through the entire list |
-| v1.0 | Inventory Manager | input my current location and sort tasks in terms of distance to me | clear tasks in the warehouse starting with the closest task (in terms of distance) to me |
-| v1.0 | Inventory Manager | delete a task for a specific SKU | not unnecessarily track it if it needs to be dropped |
-| v1.0 | Inventory Manager | view all my tasks in a single dashboard ordered by SKU | know what needs to be completed & plan accordingly |
-| v1.0 | Inventory Manager | set a default priority for all new tasks | speed up the task creation process |
-| v1.0 | Inventory Manager | attach a "Location" to a task | not waste time looking for the item that needs work |
-| v2.0 | Inventory Manager | sort my tasks by priority | complete only high-priority tasks in the event of limited time |
-| v2.0 | Inventory Manager | pull up the tasks only for a specific SKU | complete all the tasks for a given SKU if required |
-| v2.0 | Inventory Manager | search for tasks using keywords | quickly locate specific tasks without browsing through the entire list |
-| v2.0 | Inventory Manager | view a help guide of available commands | learn how to use the CLI without external documentation |
-| v2.0 | Inventory Manager | generate a view of the amount of tasks in each sector of the warehouse | have a birds-eye view of the location of each task |
-| v2.0 | Inventory Manager | add notes or comments to individual task | document observations or special conditions during task execution |
-| v2.0 | Inventory Manager | register a new SKU identifier into a localDB | track specific tasks for an item separately |
-| v2.0 | Inventory Manager | attach an action item to a registered SKU | the condition + quality of the item is monitored |
-| v2.0 | Inventory Manager | assign priority level when creating a task | ensure urgent issues such as expiring goods are attended to in time |
-| v2.0 | Inventory Manager | execute a command to view a dashboard summary of all active SKUs & pending tasks | instantly get a view of all SKUs without using a complicated GUI |
-| v2.0 | Inventory Manager | mark a task as resolved | clear the queue of outstanding tasks by priority |
-| v2.0 | Inventory Manager | export a list of all high priority tasks to a readable format, e.g CSV | print a physical checklist for warehouse associates who do not have access to the CLI |
-| v2.0 | Inventory Manager | search for a specific SKU id | quickly audit all pending actions for a specific product that might be under inspection / recall |
-| v2.0 | Inventory Manager | edit the description of an existing task | update information efficiently |
-| v2.0 | Inventory Manager | conduct an analysis on a SKU | for reporting and analytics to colleagues |
+| Version | As a ...          | I want to ...                                                                    | So that I can ...                                                                                |
+|---------|-------------------|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| v1.0    | Inventory Manager | register a new SKU                                                               | begin tracking accountability tasks for this particular SKU                                      |
+| v1.0    | Inventory Manager | add a task to a specific SKU                                                     | ensure necessary inspections are conducted                                                       |
+| v1.0    | Inventory Manager | assign a priority level to each task                                             | clear tasks that need to be performed first                                                      |
+| v1.0    | Inventory Manager | mark a task as completed for a specific SKU                                      | track the tasks completed in a given day                                                         |
+| v1.0    | Inventory Manager | set due dates for tasks assigned to a SKU                                        | quickly locate specific tasks without browsing through the entire list                           |
+| v1.0    | Inventory Manager | input my current location and sort tasks in terms of distance to me              | clear tasks in the warehouse starting with the closest task (in terms of distance) to me         |
+| v1.0    | Inventory Manager | delete a task for a specific SKU                                                 | not unnecessarily track it if it needs to be dropped                                             |
+| v1.0    | Inventory Manager | view all my tasks in a single dashboard ordered by SKU                           | know what needs to be completed & plan accordingly                                               |
+| v1.0    | Inventory Manager | set a default priority for all new tasks                                         | speed up the task creation process                                                               |
+| v1.0    | Inventory Manager | attach a "Location" to a task                                                    | not waste time looking for the item that needs work                                              |
+| v2.0    | Inventory Manager | sort my tasks by priority                                                        | complete only high-priority tasks in the event of limited time                                   |
+| v2.0    | Inventory Manager | pull up the tasks only for a specific SKU                                        | complete all the tasks for a given SKU if required                                               |
+| v2.0    | Inventory Manager | search for tasks using keywords                                                  | quickly locate specific tasks without browsing through the entire list                           |
+| v2.0    | Inventory Manager | view a help guide of available commands                                          | learn how to use the CLI without external documentation                                          |
+| v2.0    | Inventory Manager | generate a view of the amount of tasks in each sector of the warehouse           | have a birds-eye view of the location of each task                                               |
+| v2.0    | Inventory Manager | add notes or comments to individual task                                         | document observations or special conditions during task execution                                |
+| v2.0    | Inventory Manager | register a new SKU identifier into a localDB                                     | track specific tasks for an item separately                                                      |
+| v2.0    | Inventory Manager | attach an action item to a registered SKU                                        | the condition + quality of the item is monitored                                                 |
+| v2.0    | Inventory Manager | assign priority level when creating a task                                       | ensure urgent issues such as expiring goods are attended to in time                              |
+| v2.0    | Inventory Manager | execute a command to view a dashboard summary of all active SKUs & pending tasks | instantly get a view of all SKUs without using a complicated GUI                                 |
+| v2.0    | Inventory Manager | mark a task as resolved                                                          | clear the queue of outstanding tasks by priority                                                 |
+| v2.0    | Inventory Manager | export a list of all high priority tasks to a readable format, e.g CSV           | print a physical checklist for warehouse associates who do not have access to the CLI            |
+| v2.0    | Inventory Manager | search for a specific SKU id                                                     | quickly audit all pending actions for a specific product that might be under inspection / recall |
+| v2.0    | Inventory Manager | edit the description of an existing task                                         | update information efficiently                                                                   |
+| v2.0    | Inventory Manager | conduct an analysis on a SKU                                                     | for reporting and analytics to colleagues                                                        |
+
 ## Appendix C: Non-Functional Requirements
 
 1. **Environment Requirements:** The system should work on any mainstream OS (Windows, Linux, macOS) as long as it has Java `17` or above installed.
