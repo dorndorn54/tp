@@ -19,13 +19,13 @@ and reloads it seamlessly on the next launch.
 
 1. Ensure you have Java `17` or above installed on your computer.
 
-2. Download the latest `.jar` file from [here](http://link.to/itemtasker).
+2. Download the latest `.jar` file from [here](https://github.com/AY2526S2-CS2113-W09-1/tp/releases).
 
 3. Copy the file to the folder you want to use as the home folder for ItemTasker.
 
 4. Open a command terminal, `cd` into the folder you put the jar file in, and use the following command to run the application:
 ```
-   java -jar itemtasker.jar
+   java -jar ItemTasker.jar
 ```
 If the setup is correct, you should see the welcome message appear in a few seconds.
 
