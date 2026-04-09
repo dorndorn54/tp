@@ -25,5 +25,5 @@ class SKU MODEL_COLOR_T1 {
 
 SKUCommandHandler -down-> "1" SKUList : skuList
 SKUCommandHandler ..> CommandHelper : uses
-SKUList -down-> "*" SKU : skuList
+SKUList o-down-> "*" SKU : skuList
 @enduml

@@ -51,9 +51,9 @@ class SKUTask MODEL_COLOR_T3 {
 TaskCommandHandler -down-> "1" SKUList : skuList
 TaskCommandHandler ..> TaskSorter : creates
 TaskCommandHandler ..> CommandHelper : uses
-SKUList -down-> "*" SKU : skuList
-SKU -down-> "1" SKUTaskList : skuTaskList
-SKUTaskList -down-> "*" SKUTask : skuTaskList
+SKUList o-down-> "*" SKU : skuList
+SKU *-down-> "1" SKUTaskList : skuTaskList
+SKUTaskList *-down-> "*" SKUTask : skuTaskList
 TaskSorter ..> SKUTask : sorts
 
 @enduml

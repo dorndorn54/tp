@@ -118,8 +118,11 @@ Export ..> SKUList
 
 
 ' -- Model layer --
-SKUList -down-> "*" SKU
-SKU -down-> "1" SKUTaskList
-SKUTaskList -down-> "*" SKUTask
+' SKUList "contains" SKUs — aggregation: an SKU can be instantiated independently
+SKUList o-down-> "*" SKU
+' SKU "encapsulates" its SKUTaskList — composition: TaskList lifecycle is bound to its SKU
+SKU *-down-> "1" SKUTaskList
+' SKUTaskList "contains" SKUTasks — composition: tasks die with the list
+SKUTaskList *-down-> "*" SKUTask
 
 @enduml

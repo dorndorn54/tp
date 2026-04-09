@@ -33,9 +33,11 @@ The diagram shows the main components and their relationships:
 - **Storage** handles JSON persistence of the warehouse state
 - **Export** writes a human-readable inventory snapshot to a text file
 
-*Note: Solid arrows (→) indicate direct dependencies or composition.
-Dashed arrows (- ->) indicate utility dependencies (e.g. static helper calls).
-The "*" multiplicity on model relationships denotes one-to-many.*
+*Note: Solid arrows (→) indicate direct associations.
+Dashed arrows (⇢) indicate dependencies.
+Filled diamonds (◆) indicate composition.
+Hollow diamonds (◇) indicate aggregation.
+The "\*" multiplicity on model relationships denotes one-to-many.*
 
 **Key Design Principles:**
 

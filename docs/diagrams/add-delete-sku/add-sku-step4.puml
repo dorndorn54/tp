@@ -4,10 +4,6 @@ skinparam arrowThickness 1.1
 skinparam classAttributeIconSize 0
 hide circle
 
-skinparam ClassFontColor #000000
-skinparam ClassBorderColor #000000
-skinparam ClassBackgroundColor #FFFFAA
-
 title System Memory State (Step 4)
 
 class "<u>skuList:SKUList</u>" as skuList
