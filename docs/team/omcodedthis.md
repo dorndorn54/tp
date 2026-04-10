@@ -124,7 +124,12 @@ Below is are 1:1 diagrams pulled from the Developer Guide, note that only a port
 
 ![Diagram](../diagrams/component-storage/component-storage-diagram.png)
 
+### Add / Delete SKU Feature Sequence Diagram
+
+![Sequence Diagram](../diagrams/add-delete-sku/add-sku-sequence.png)
 
 ### Add / Delete SKU Feature Sequence Diagram
 
-![Step 5](../diagrams/add-delete-sku/add-sku-sequence.png)
+![Class Diagram](../diagrams/add-delete-sku/add-sku-architecture.png)
+
+
