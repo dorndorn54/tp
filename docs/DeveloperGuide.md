@@ -351,11 +351,11 @@ Given below is an example usage scenario demonstrating how the Add SKU mechanism
 
 The following sequence diagram shows the flow of adding a SKU:
 
-![Step 5](diagrams/add-delete-sku/add-sku-sequence.png)
+![Sequence Diagram](diagrams/add-delete-sku/add-sku-sequence.png)
 
 The following class diagram shows the architecture:
 
-![Step 5](diagrams/add-delete-sku/add-sku-architecture.png)
+![Class Diagram](diagrams/add-delete-sku/add-sku-architecture.png)
 
 #### Design Considerations
 
