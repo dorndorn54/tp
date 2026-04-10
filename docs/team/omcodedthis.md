@@ -112,33 +112,19 @@ your `storage.json` file before doing any manual tweaking.
 
 ## Contributions to the Developer Guide (Extracts)
 
-Below is are 1:1 extracts pulled from the Developer Guide, note that only a portion is made available here due to page limits.
+Below is are 1:1 diagrams pulled from the Developer Guide, note that only a portion is made available here due to page limits.
 
-### SKU component
-
-**API** : `SKUList.java`, `SKU.java`, `Location.java`.
+### SKU Component Diagram
 
 ![Diagram](../diagrams/component-sku/component-sku-diagram.png)
 
+<div style="page-break-after: always;"></div>
 
-### Storage component
-
-**API** : `Storage.java` and `Export.java`.
+### Storage Component Diagram
 
 ![Diagram](../diagrams/component-storage/component-storage-diagram.png)
 
 
-<div style="page-break-after: always;"></div>
-
-### Add / Delete SKU Feature
-
-#### Implementation Details
-
-The Add and Delete SKU mechanism is facilitated by the `SKUCommandHandler` component, which is dispatched by
-the `CommandRunner`. It manages the application's core state through a single primary data structure: the `SKUList`.
-Following object-oriented encapsulation principles, there are no external maps; each `SKU` manages its
-own `SKUTaskList`.
-
-The following sequence diagram shows the flow of adding a SKU:
+### Add / Delete SKU Feature Sequence Diagram
 
 ![Step 5](../diagrams/add-delete-sku/add-sku-sequence.png)
