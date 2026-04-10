@@ -126,9 +126,11 @@ Below is are 1:1 diagrams pulled from the Developer Guide, note that only a port
 
 ### Add / Delete SKU Feature Sequence Diagram
 
+<div style="page-break-after: always;"></div>
+
 ![Sequence Diagram](../diagrams/add-delete-sku/add-sku-sequence.png)
 
-### Add / Delete SKU Feature Sequence Diagram
+### Add / Delete SKU Feature Architecture Diagram
 
 ![Class Diagram](../diagrams/add-delete-sku/add-sku-architecture.png)
 
