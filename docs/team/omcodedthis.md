@@ -36,13 +36,9 @@ Authored Q&A segments on saving, data-transfer, and implementation, translating 
 
 ### Contributions to the Developer Guide (DG)
 
-#### SKU & Storage Components
+#### SKU & Storage Components and Add / Delete SKU Enhancement
 
-Created all UML diagrams and architectural explanations for the SKU & Storage component under Design.
-
-#### Add / Delete SKU Enhancement
-
-Created all memory-state UML diagrams and explanations for the Add/Delete feature under Implementation.
+Created all UML diagrams and architectural explanations for the SKU & Storage component under Design and Add/Delete feature under Implementation..
 
 #### Appendix
 
