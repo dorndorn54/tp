@@ -28,7 +28,7 @@ public class SKUTaskList {
     public int getSize() {
         return skuTaskList.size();
     }
-    
+
     /**
      * Checks whether the task list is empty.
      *
@@ -40,6 +40,7 @@ public class SKUTaskList {
 
     /**
      * Adds a new task with the specified SKU ID, priority, due date, and description.
+     * Prevents exact duplicates from being added.
      *
      * @param skuID       The SKU identifier for the task.
      * @param priority    The priority level of the task.
@@ -51,6 +52,14 @@ public class SKUTaskList {
         assert priority != null : "Priority cannot be null";
         assert dueDate != null : "Due date cannot be null";
         assert description != null : "Description cannot be null";
+
+        for (SKUTask existingTask : skuTaskList) {
+            if (existingTask.getSKUTaskPriority() == priority &&
+                    existingTask.getSKUTaskDueDate().equals(dueDate) &&
+                    existingTask.getSKUTaskDescription().equalsIgnoreCase(description)) {
+                throw new IllegalArgumentException("An identical task already exists for this SKU.");
+            }
+        }
 
         SKUTask newTask = new SKUTask(skuID, priority, dueDate, description);
         skuTaskList.add(newTask);
@@ -79,12 +88,7 @@ public class SKUTaskList {
      * @param description A text description of what this task involves.
      */
     public void addSKUTask(String skuID, String dueDate, String description) {
-        assert skuID != null && !skuID.trim().isEmpty() : "SKU ID cannot be null or empty";
-        assert dueDate != null : "Due date cannot be null";
-        assert description != null : "Description cannot be null";
-
-        SKUTask newSkuTask = new SKUTask(skuID, dueDate, description);
-        skuTaskList.add(newSkuTask);
+        this.addSKUTask(skuID, Priority.HIGH, dueDate, description);
     }
 
     /**
@@ -215,4 +219,3 @@ public class SKUTaskList {
         skuTaskList.get(taskIndex - 1).unmark();
     }
 }
-

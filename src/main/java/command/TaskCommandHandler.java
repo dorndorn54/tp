@@ -64,6 +64,8 @@ public class TaskCommandHandler {
             throw new MissingArgumentException("Usage: addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY] [t/DESCRIPTION]");
         }
 
+        skuId = skuId.trim().toUpperCase();
+
         String validatedDate = DateValidator.validateDateOrError(dueDate);
         if (validatedDate == null) {
             return;
@@ -84,7 +86,7 @@ public class TaskCommandHandler {
         SKUTaskList taskList = targetSku.getSKUTaskList();
 
         try {
-            taskList.addSKUTask(skuId.toUpperCase(), priority, validatedDate, description);
+            taskList.addSKUTask(skuId, priority, validatedDate, description);
             int newIndex = taskList.getSize();
 
             LOGGER.log(Level.INFO, "Added task #" + newIndex + " to SKU [" + skuId + "]");
