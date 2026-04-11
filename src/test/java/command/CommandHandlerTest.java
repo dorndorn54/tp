@@ -38,7 +38,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    public void handleAddSku_validCommand_addsToSkuList() throws MissingArgumentException {
+    public void handleAddSku_validCommand_addsToSkuList() throws Exception {
         ParsedCommand cmd = new ParsedCommand("addsku", Map.of("n", "WIDGET-1",
                 "l", "A1"));
         skuHandler.handleAddSku(cmd);
@@ -54,7 +54,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    public void handleEditSku_validMove_updatesLocation() throws SKUNotFoundException {
+    public void handleEditSku_validMove_updatesLocation() throws Exception {
         skuList.addSKU("MOVE-ME", Location.A1);
         ParsedCommand cmd = new ParsedCommand("editsku", Map.of("n", "MOVE-ME",
                 "l", "C3"));
@@ -202,6 +202,72 @@ class CommandHandlerTest {
     }
 
     @Test
+    public void handleDeleteTask_negativeIndex_throwsInvalidIndexException() throws Exception {
+        skuList.addSKU("NEG-TEST", Location.A1);
+        skuList.findByID("NEG-TEST").getSKUTaskList().addSKUTask("NEG-TEST", Priority.LOW,
+                "2026-01-01", "T");
+
+        ParsedCommand cmd = new ParsedCommand("deletetask", Map.of("n", "NEG-TEST",
+                "i", "-1"));
+        assertThrows(InvalidIndexException.class, () -> taskHandler.handleDeleteTask(cmd));
+    }
+
+    @Test
+    public void handleDeleteTask_zeroIndex_throwsInvalidIndexException() throws Exception {
+        skuList.addSKU("ZERO-TEST", Location.A1);
+        skuList.findByID("ZERO-TEST").getSKUTaskList().addSKUTask("ZERO-TEST", Priority.LOW,
+                "2026-01-01", "T");
+
+        ParsedCommand cmd = new ParsedCommand("deletetask", Map.of("n", "ZERO-TEST",
+                "i", "0"));
+        assertThrows(InvalidIndexException.class, () -> taskHandler.handleDeleteTask(cmd));
+    }
+
+    @Test
+    public void handleEditTask_negativeIndex_throwsInvalidIndexException() throws Exception {
+        skuList.addSKU("EDIT-NEG", Location.A1);
+        skuList.findByID("EDIT-NEG").getSKUTaskList().addSKUTask("EDIT-NEG", Priority.LOW,
+                "2026-01-01", "T");
+
+        ParsedCommand cmd = new ParsedCommand("edittask",
+                Map.of("n", "EDIT-NEG", "i", "-1", "t", "new desc"));
+        assertThrows(InvalidIndexException.class, () -> taskHandler.handleEditTask(cmd));
+    }
+
+    @Test
+    public void handleMarkTask_negativeIndex_throwsInvalidIndexException() throws Exception {
+        skuList.addSKU("MARK-NEG", Location.A1);
+        skuList.findByID("MARK-NEG").getSKUTaskList().addSKUTask("MARK-NEG", Priority.LOW,
+                "2026-01-01", "T");
+
+        ParsedCommand cmd = new ParsedCommand("marktask", Map.of("n", "MARK-NEG",
+                "i", "-1"));
+        assertThrows(InvalidIndexException.class, () -> taskHandler.handleMarkTask(cmd));
+    }
+
+    @Test
+    public void handleUnmarkTask_negativeIndex_throwsInvalidIndexException() throws Exception {
+        skuList.addSKU("UNMARK-NEG", Location.A1);
+        skuList.findByID("UNMARK-NEG").getSKUTaskList().addSKUTask("UNMARK-NEG", Priority.LOW,
+                "2026-01-01", "T");
+        skuList.findByID("UNMARK-NEG").getSKUTaskList().markTask(1);
+
+        ParsedCommand cmd = new ParsedCommand("unmarktask", Map.of("n", "UNMARK-NEG",
+                "i", "-1"));
+        assertThrows(InvalidIndexException.class, () -> taskHandler.handleUnmarkTask(cmd));
+    }
+
+    @Test
+    public void handleFind_negativeIndex_throwsInvalidIndexException() {
+        skuList.addSKU("FIND-NEG", Location.A1);
+        skuList.findByID("FIND-NEG").getSKUTaskList().addSKUTask("FIND-NEG", Priority.HIGH,
+                "2026-01-01", "test");
+
+        ParsedCommand cmd = new ParsedCommand("find", Map.of("n", "FIND-NEG", "i", "-1"));
+        assertThrows(InvalidIndexException.class, () -> viewHandler.handleFind(cmd));
+    }
+
+    @Test
     public void handleStatus_allSkus_executesWithoutError() {
         ParsedCommand cmd = new ParsedCommand("status", Map.of());
         assertDoesNotThrow(() -> viewHandler.handleStatus(cmd));
@@ -212,5 +278,103 @@ class CommandHandlerTest {
         skuList.addSKU("STAT-SKU", Location.C2);
         ParsedCommand cmd = new ParsedCommand("status", Map.of("n", "STAT-SKU"));
         assertDoesNotThrow(() -> viewHandler.handleStatus(cmd));
+    }
+
+    @Test
+    public void handleAddSku_unknownFlag_throwsInvalidFilterException() {
+        ParsedCommand cmd = new ParsedCommand("addsku", Map.of("n", "FLAG-SKU", "l", "A1", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> skuHandler.handleAddSku(cmd));
+    }
+
+    @Test
+    public void handleAddSkuTask_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("FLAG-TEST", Location.A1);
+        ParsedCommand cmd = new ParsedCommand("addskutask",
+                Map.of("n", "FLAG-TEST", "d", "2026-06-15", "x", "HIGH"));
+        assertThrows(InvalidFilterException.class, () -> taskHandler.handleAddSkuTask(cmd));
+    }
+
+    @Test
+    public void handleEditTask_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("EDIT-FLAG", Location.A1);
+        skuList.findByID("EDIT-FLAG").getSKUTaskList().addSKUTask("EDIT-FLAG", Priority.LOW,
+                "2026-01-01", "T");
+        ParsedCommand cmd = new ParsedCommand("edittask",
+                Map.of("n", "EDIT-FLAG", "i", "1", "x", "LOW"));
+        assertThrows(InvalidFilterException.class, () -> taskHandler.handleEditTask(cmd));
+    }
+
+    @Test
+    public void handleDeleteTask_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("DEL-FLAG", Location.A1);
+        skuList.findByID("DEL-FLAG").getSKUTaskList().addSKUTask("DEL-FLAG", Priority.LOW,
+                "2026-01-01", "T");
+        ParsedCommand cmd = new ParsedCommand("deletetask",
+                Map.of("n", "DEL-FLAG", "i", "1", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> taskHandler.handleDeleteTask(cmd));
+    }
+
+    @Test
+    public void handleMarkTask_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("MARK-FLAG", Location.A1);
+        skuList.findByID("MARK-FLAG").getSKUTaskList().addSKUTask("MARK-FLAG", Priority.LOW,
+                "2026-01-01", "T");
+        ParsedCommand cmd = new ParsedCommand("marktask",
+                Map.of("n", "MARK-FLAG", "i", "1", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> taskHandler.handleMarkTask(cmd));
+    }
+
+    @Test
+    public void handleUnmarkTask_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("UMARK-FLAG", Location.A1);
+        skuList.findByID("UMARK-FLAG").getSKUTaskList().addSKUTask("UMARK-FLAG", Priority.LOW,
+                "2026-01-01", "T");
+        ParsedCommand cmd = new ParsedCommand("unmarktask",
+                Map.of("n", "UMARK-FLAG", "i", "1", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> taskHandler.handleUnmarkTask(cmd));
+    }
+
+    @Test
+    public void handleFind_unknownFlag_throwsInvalidFilterException() {
+        skuList.addSKU("FIND-FLAG", Location.A1);
+        skuList.findByID("FIND-FLAG").getSKUTaskList().addSKUTask("FIND-FLAG", Priority.HIGH,
+                "2026-01-01", "test");
+        ParsedCommand cmd = new ParsedCommand("find", Map.of("n", "FIND-FLAG", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> viewHandler.handleFind(cmd));
+    }
+
+    @Test
+    public void handleEditSku_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("EDITS-FLAG", Location.A1);
+        ParsedCommand cmd = new ParsedCommand("editsku", Map.of("n", "EDITS-FLAG", "l", "B2", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> skuHandler.handleEditSku(cmd));
+    }
+
+    @Test
+    public void handleDeleteSku_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("DELSKU-FLAG", Location.A1);
+        ParsedCommand cmd = new ParsedCommand("deletesku", Map.of("n", "DELSKU-FLAG", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> skuHandler.handleDeleteSku(cmd));
+    }
+
+    @Test
+    public void handleSortTask_unknownFlag_throwsInvalidFilterException() throws Exception {
+        skuList.addSKU("SORT-FLAG", Location.A1);
+        ParsedCommand cmd = new ParsedCommand("sorttasks", Map.of("n", "SORT-FLAG", "x", "BAD"));
+        assertThrows(InvalidFilterException.class, () -> taskHandler.handleSortTask(cmd));
+    }
+
+    @Test
+    public void handleListTasks_nonExistentSku_throwsSKUNotFoundException() {
+        ParsedCommand cmd = new ParsedCommand("listtasks", Map.of("n", "GHOST-SKU"));
+        assertThrows(SKUNotFoundException.class, () -> viewHandler.handleListTasks(cmd));
+    }
+
+    @Test
+    public void parseIndex_overflowLargeIndex_throwsInvalidIndexException() {
+        // Technically testing through marktask handle
+        ParsedCommand cmd = new ParsedCommand("marktask", Map.of("n", "PALLET-A", "i", "2147483648"));
+        InvalidIndexException thrown = assertThrows(InvalidIndexException.class, () -> taskHandler.handleMarkTask(cmd));
+        assertTrue(thrown.getMessage().contains("Task index is too large"));
     }
 }

@@ -76,7 +76,7 @@ The `Command` component,
 
 `ParsedCommand` is an immutable value object produced by `Parser` and consumed by every handler. 
 It exposes three query methods — `getCommandWord()`, `getArg(key)`, and `hasArg(key)` — and a 
-`getAllFlags()` set used by `ViewCommandHandler` for strict flag validation. Both the command 
+`getAllFlags()` set used by `CommandHelper.validateFlags()` for strict flag validation across all handlers. Both the command 
 word and all flag keys are normalized to lowercase at construction time, so handlers can safely 
 use literal lowercase strings in comparisons.
 
@@ -128,7 +128,7 @@ The sequence diagrams below illustrate key interactions within `TaskCommandHandl
 
 #### `ViewCommandHandler`
 
-Handles the three read-only commands: `listtasks`, `find`, and `status`. It applies strict flag validation (throwing `InvalidFilterException` for unrecognized flags and `MultipleFilterException` if more than one filter is combined on `listtasks`) before delegating to private sub-methods following the SLAP principle. The `find` command supports combinable filters (`n/`, `t/`, `i/`) and traverses the entire `SKUList`, accumulating formatted result strings before handing them to `Ui` for display in one call.
+Handles the three read-only commands: `listtasks`, `find`, and `status`. Like all handlers, it validates flags via `CommandHelper.validateFlags()` (throwing `InvalidFilterException` for unrecognized flags). Additionally, it enforces `MultipleFilterException` if more than one filter is combined on `listtasks`. It then delegates to private sub-methods following the SLAP principle. The `find` command supports combinable filters (`n/`, `t/`, `i/`) and traverses the entire `SKUList`, accumulating formatted result strings before handing them to `Ui` for display in one call.
 
 The sequence diagrams below illustrate key read paths in `ViewCommandHandler`:
 
@@ -144,8 +144,9 @@ The sequence diagrams below illustrate key read paths in `ViewCommandHandler`:
 
 #### `CommandHelper` and `DateValidator`
 
-These two classes are pure utilities with no state. `CommandHelper` centralises six 
-shared operations used across all three handler classes: SKU lookup with error printing 
+These two classes are pure utilities with no state. `CommandHelper` centralises seven 
+shared operations used across all three handler classes: flag validation (`validateFlags`),
+SKU lookup with error printing 
 (`findSkuOrError`), `Location` parsing (`parseLocation`), `Priority` parsing (`parsePriority
 ` and `parsePriorityOrDefault`), integer index parsing (`parseIndex`), and description-keyword
 matching (`matchesDescription`). `DateValidator` isolates date validation behind a two-step check 
@@ -186,8 +187,8 @@ All seven concrete exceptions extend `ItemTaskerException` directly. There is in
 
 * **`EmptyListException`** — thrown when an operation (e.g., listing or sorting) is attempted on a list that contains no items. Accepts a `listType` string to identify which list was empty.
 * **`InvalidCommandException`** — thrown when the user enters an unrecognized, malformed, or syntactically incorrect command word.
-* **`InvalidFilterException`** — thrown by `ViewCommandHandler` when an unrecognized flag is detected on `listtasks` or `status`, or when a filter value is syntactically incorrect.
-* **`InvalidIndexException`** — thrown when a task index is either out of bounds for its SKU's task list, or cannot be parsed as a valid integer. Provides two constructors to cover both cases distinctly.
+* **`InvalidFilterException`** — thrown by all command handlers (via `CommandHelper.validateFlags()`) when an unrecognized flag is detected, or when a filter value is syntactically incorrect.
+* **`InvalidIndexException`** — thrown when a task index is either out of bounds for its SKU's task list, cannot be parsed as a valid integer, or overflows integer limits. Provides three constructors to cover all these cases distinctly.
 * **`MissingArgumentException`** — thrown when a required flag (e.g., `n/` or `d/`) is absent from a command. The message always includes the correct usage string for the offending command.
 * **`MultipleFilterException`** — thrown by `ViewCommandHandler` when more than one filter flag (`n/`, `p/`, `l/`) is provided simultaneously on a `listtasks` command, which only supports a single filter at a time.
 * **`SKUNotFoundException`** — thrown when a SKU ID provided by the user does not exist in the warehouse. The message includes the missing ID and directs the user to `listtasks`.

@@ -1,5 +1,8 @@
 package command;
 
+import exception.InvalidFilterException;
+import exception.InvalidIndexException;
+
 import sku.Location;
 import sku.SKU;
 import sku.SKUList;
@@ -7,13 +10,35 @@ import skutask.Priority;
 import skutask.SKUTask;
 import ui.Ui;
 
+import java.util.Set;
+
 /**
  * Provides shared static helper methods used across command handlers
  * for parsing and validating user input.
  */
 
-//@@author dorndorn54
+// @@author dorndorn54
 public class CommandHelper {
+
+    /**
+     * Validates that all flags in a parsed command are among the allowed flags.
+     * Throws an exception if any unrecognized flag is found.
+     *
+     * @param cmd          The parsed command to validate.
+     * @param allowedFlags The set of allowed flag keys (without slash).
+     * @throws InvalidFilterException If an unrecognized flag is detected.
+     */
+    public static void validateFlags(ParsedCommand cmd, String... allowedFlags)
+            throws InvalidFilterException {
+        Set<String> allowed = Set.of(allowedFlags);
+        for (String flag : cmd.getAllFlags()) {
+            if (!allowed.contains(flag)) {
+                throw new InvalidFilterException(
+                        "Unknown flag '" + flag + "/'. Allowed flags: "
+                                + String.join("/, ", allowedFlags) + "/");
+            }
+        }
+    }
 
     /**
      * Finds a SKU by ID using the SKUList, printing an error if not found.
@@ -67,10 +92,12 @@ public class CommandHelper {
     }
 
     /**
-     * Parses the optional priority flag from a command, defaulting to HIGH if absent.
+     * Parses the optional priority flag from a command, defaulting to HIGH if
+     * absent.
      *
      * @param cmd The parsed command to extract the priority from.
-     * @return The parsed Priority (defaults to HIGH), or null if the provided value was invalid.
+     * @return The parsed Priority (defaults to HIGH), or null if the provided value
+     *         was invalid.
      */
     public static Priority parsePriorityOrDefault(ParsedCommand cmd) {
         if (!cmd.hasArg("p")) {
@@ -81,17 +108,25 @@ public class CommandHelper {
 
     /**
      * Parses a string into a 1-based integer index.
-     * Prints an error and returns -1 if the input is not a valid number.
+     * Throws an exception if the input is not a valid positive integer.
      *
      * @param indexStr The raw string input provided by the user.
-     * @return The parsed integer index, or -1 if the input is not a valid integer.
+     * @return The parsed integer index (guaranteed to be positive).
+     * @throws InvalidIndexException If the input is not a valid positive integer.
      */
-    public static int parseIndex(String indexStr) {
+    public static int parseIndex(String indexStr) throws InvalidIndexException {
         try {
-            return Integer.parseInt(indexStr.trim());
+            int index = Integer.parseInt(indexStr.trim());
+            if (index <= 0) {
+                throw new InvalidIndexException(indexStr);
+            }
+            return index;
         } catch (NumberFormatException e) {
-            Ui.printError("Task index must be a number, got: '" + indexStr + "'");
-            return -1;
+            String trimmed = indexStr.trim();
+            // If it consists entirely of digits but throws NumberFormatException, it
+            // overflowed
+            boolean isOverflow = trimmed.matches("\\d+");
+            throw new InvalidIndexException(trimmed, isOverflow);
         }
     }
 

@@ -95,7 +95,7 @@ Format: `addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY] [t/DESCRIPTION]`
 
 * `SKU_ID` must already exist. Use `addsku` to register it first.
 * `DUE_DATE` must be in `YYYY-MM-DD` format. e.g. `2026-06-15`.
-* `PRIORITY` is optional and must be `HIGH`, `MEDIUM`, or `LOW`. Defaults to `MEDIUM` if not provided.
+* `PRIORITY` is optional and must be `HIGH`, `MEDIUM`, or `LOW`. Defaults to `HIGH` if not provided.
 * `DESCRIPTION` is optional. Leave it out to create a task with no description.
 
 Example of usage:

@@ -68,7 +68,8 @@ __________________________________________________________________________
 >  [INFO] Task #1 for SKU [PALLET-A] is already unmarked.
 > >  [ERROR] Task index 99 is out of range for SKU: PALLET-A
 >  [ERROR] SKU not found: GHOST-SKU
->  [ERROR] Task index must be a number, got: 'abc'
+>  [ERROR] Invalid task index provided: abc. Please provide a valid positive integer.
+>  [ERROR] Task index is too large. Please enter a valid positive integer under 2147483648.
 > >  All tasks:
 __________________________________________________________________________
  SKU [PALLET-A]:
@@ -110,7 +111,7 @@ __________________________________________________________________________
 __________________________________________________________________________
 > >  [ERROR] Invalid priority 'CRITICAL'. Use HIGH, MEDIUM, or LOW.
 >  [ERROR] Invalid location 'Z9'. Must be one of: A1 A2 A3 B1 B2 B3 C1 C2 C3
->  [INFO] No tasks found for SKU: GHOST-SKU
+>  [ERROR] SKU 'GHOST-SKU' not found. Use 'listtasks' to see available SKUs.
 > >  Search results:
 __________________________________________________________________________
   [SKU: PALLET-A] #1. [ ] ID: PALLET-A | Priority: MEDIUM | Due: 2026-05-01 | Desc: updated desc
@@ -131,7 +132,9 @@ __________________________________________________________________________
 >  Search results:
 __________________________________________________________________________
  [ERROR] Task index 99 is out of range for SKU: PALLET-A
->  [ERROR] Usage: find [n/SKU_ID] [t/DESCRIPTION] [i/TASK_INDEX]
+>  Search results:
+__________________________________________________________________________
+ [ERROR] Usage: find [n/SKU_ID] [t/DESCRIPTION] [i/TASK_INDEX]
 > >  [OK] Deleted task #2 from SKU [PALLET-A].
 >  [ERROR] Task index 99 is out of range for SKU: PALLET-A
 >  [OK] Deleted SKU [PALLET-B] and all its tasks.

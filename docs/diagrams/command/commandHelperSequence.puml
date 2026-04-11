@@ -72,14 +72,13 @@ return priority / null
 
 caller -> helper ++ : parseIndex(indexStr)
 
-alt valid integer string
+alt valid positive integer string
     note right : returns parsed int
-else NumberFormatException
-    helper -> ui : printError("Task index must be a number ...")
-    note right : returns -1
+else non-positive integer or non-numeric
+    helper -> caller : throw InvalidIndexException
 end
 
-return index / -1
+return index
 
 == matchesDescription ==
 
@@ -99,4 +98,17 @@ else
 end
 
 return boolean
+
+== validateFlags ==
+
+caller -> helper ++ : validateFlags(cmd, allowedFlags)
+
+helper -> cmd ++ : getAllFlags()
+return flagSet
+
+alt unrecognized flag found
+    helper -> caller : throw InvalidFilterException
+end
+
+return void
 @enduml

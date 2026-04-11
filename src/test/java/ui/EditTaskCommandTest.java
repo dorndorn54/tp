@@ -52,7 +52,7 @@ public class EditTaskCommandTest {
     }
 
     private ParsedCommand buildEditTask(String skuId, String index, String date,
-                                        String priority, String desc) {
+            String priority, String desc) {
         Map<String, String> args = new HashMap<>();
         if (skuId != null) {
             args.put("n", skuId);
@@ -140,14 +140,13 @@ public class EditTaskCommandTest {
 
     @Test
     public void edittask_outOfRangeIndex_throwsInvalidIndexException() {
-        assertThrows(InvalidIndexException.class, () ->
-                runner.run(buildEditTask("PALLET-A", "99", null, "LOW", null)));
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildEditTask("PALLET-A", "99", null, "LOW", null)));
     }
 
     @Test
-    public void edittask_nonNumericIndex_showsError() throws ItemTaskerException, IOException {
-        runner.run(buildEditTask("PALLET-A", "abc", "2027-01-01", null, null));
-        assertTrue(outputStream.toString().contains("[ERROR]"));
+    public void edittask_nonNumericIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class,
+                () -> runner.run(buildEditTask("PALLET-A", "abc", "2027-01-01", null, null)));
     }
 
     @Test
@@ -176,5 +175,17 @@ public class EditTaskCommandTest {
         assertEquals(Priority.HIGH, sku.getSKUTaskList().getSKUTaskList().get(1).getSKUTaskPriority());
         assertEquals(Priority.HIGH, sku.getSKUTaskList().getSKUTaskList().get(0).getSKUTaskPriority());
         assertEquals(Priority.LOW, sku.getSKUTaskList().getSKUTaskList().get(2).getSKUTaskPriority());
+    }
+
+    @Test
+    public void edittask_negativeIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class,
+                () -> runner.run(buildEditTask("PALLET-A", "-1", "2027-01-01", null, null)));
+    }
+
+    @Test
+    public void edittask_zeroIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class,
+                () -> runner.run(buildEditTask("PALLET-A", "0", "2027-01-01", null, null)));
     }
 }

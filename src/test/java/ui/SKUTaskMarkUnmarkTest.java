@@ -31,7 +31,6 @@ public class SKUTaskMarkUnmarkTest {
     private ByteArrayOutputStream outputStream;
     private PrintStream originalOut;
 
-
     @BeforeEach
     public void setUp() {
         skuList = new SKUList();
@@ -144,15 +143,13 @@ public class SKUTaskMarkUnmarkTest {
     }
 
     @Test
-    public void marktask_nonNumericIndex_showsError() throws ItemTaskerException, IOException {
-        runner.run(buildCommand("marktask", "SKU-001", "abc"));
-        assertTrue(outputStream.toString().contains("[ERROR]"));
+    public void marktask_nonNumericIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("marktask", "SKU-001", "abc")));
     }
 
     @Test
-    public void unmarktask_nonNumericIndex_showsError() throws ItemTaskerException, IOException {
-        runner.run(buildCommand("unmarktask", "SKU-001", "abc"));
-        assertTrue(outputStream.toString().contains("[ERROR]"));
+    public void unmarktask_nonNumericIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("unmarktask", "SKU-001", "abc")));
     }
 
     @Test
@@ -164,15 +161,32 @@ public class SKUTaskMarkUnmarkTest {
 
     @Test
     public void marktask_indexOutOfBounds_throwsInvalidIndexException() {
-        assertThrows(InvalidIndexException.class, () ->
-                runner.run(buildCommand("marktask", "SKU-001", "5")));
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("marktask", "SKU-001", "5")));
     }
 
     @Test
     public void unmarktask_indexOutOfBounds_throwsInvalidIndexException() {
-        assertThrows(InvalidIndexException.class, () ->
-                runner.run(buildCommand("unmarktask", "SKU-001", "5")));
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("unmarktask", "SKU-001", "5")));
     }
 
+    @Test
+    public void marktask_negativeIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("marktask", "SKU-001", "-1")));
+    }
+
+    @Test
+    public void unmarktask_negativeIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("unmarktask", "SKU-001", "-1")));
+    }
+
+    @Test
+    public void marktask_zeroIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("marktask", "SKU-001", "0")));
+    }
+
+    @Test
+    public void unmarktask_zeroIndex_throwsInvalidIndexException() {
+        assertThrows(InvalidIndexException.class, () -> runner.run(buildCommand("unmarktask", "SKU-001", "0")));
+    }
 
 }

@@ -1,5 +1,6 @@
 package command;
 
+import exception.InvalidFilterException;
 import exception.MissingArgumentException;
 import exception.SKUNotFoundException;
 
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  * Each public method corresponds to a single user command.
  */
 
-//@@author omcodedthis
+// @@author omcodedthis
 public class SKUCommandHandler {
     private static final Logger LOGGER = Logger.getLogger(SKUCommandHandler.class.getName());
     private final SKUList skuList;
@@ -33,9 +34,12 @@ public class SKUCommandHandler {
      *
      * @param cmd The parsed command containing the SKU ID and location.
      * @throws MissingArgumentException If required arguments are missing or empty.
+     * @throws InvalidFilterException   If an unrecognized flag is detected.
      */
-    public void handleAddSku(ParsedCommand cmd) throws MissingArgumentException {
+    public void handleAddSku(ParsedCommand cmd) throws MissingArgumentException, InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "l");
 
         String skuId = cmd.getArg("n");
         String locationStr = cmd.getArg("l");
@@ -62,24 +66,28 @@ public class SKUCommandHandler {
      * Updates the warehouse location of an existing SKU.
      *
      * @param cmd The parsed command containing the SKU ID and new location.
-     * @throws SKUNotFoundException If the specified SKU does not exist in the warehouse.
+     * @throws SKUNotFoundException   If the specified SKU does not exist in the
+     *                                warehouse.
+     * @throws InvalidFilterException If an unrecognized flag is detected.
      */
-    //@@author AkshayPranav19
-    public void handleEditSku(ParsedCommand cmd) throws SKUNotFoundException {
+    // @@author AkshayPranav19
+    public void handleEditSku(ParsedCommand cmd) throws SKUNotFoundException, InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "l");
 
         String skuId = cmd.getArg("n");
         String locationStr = cmd.getArg("l");
 
         if (skuId == null || locationStr == null) {
             LOGGER.log(Level.WARNING, "editsku missing args: skuId={0}, loc={1}",
-                    new Object[]{skuId, locationStr});
+                    new Object[] { skuId, locationStr });
             Ui.printError("Usage: editsku n/SKU_ID l/NEW_LOCATION");
             return;
         }
 
         LOGGER.log(Level.INFO, "Attempting to edit SKU [{0}] to location [{1}]",
-                new Object[]{skuId, locationStr});
+                new Object[] { skuId, locationStr });
 
         SKU targetSku = CommandHelper.findSkuOrError(skuList, skuId);
         if (targetSku == null) {
@@ -95,7 +103,7 @@ public class SKUCommandHandler {
 
         targetSku.setLocation(newLocation);
         LOGGER.log(Level.INFO, "SKU [{0}] successfully moved to {1}",
-                new Object[]{skuId, newLocation});
+                new Object[] { skuId, newLocation });
         Ui.printSuccess("Updated location of SKU [" + skuId.toUpperCase() + "] to " + newLocation + ".");
     }
 
@@ -104,11 +112,16 @@ public class SKUCommandHandler {
      *
      * @param cmd The parsed command containing the SKU ID to delete.
      * @throws MissingArgumentException If the SKU ID is not provided.
-     * @throws SKUNotFoundException     If the specified SKU does not exist in the warehouse.
+     * @throws SKUNotFoundException     If the specified SKU does not exist in the
+     *                                  warehouse.
+     * @throws InvalidFilterException   If an unrecognized flag is detected.
      */
-    //@@author omcodedthis
-    public void handleDeleteSku(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException {
+    // @@author omcodedthis
+    public void handleDeleteSku(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException,
+            InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n");
 
         String skuId = cmd.getArg("n");
 

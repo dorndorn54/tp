@@ -1,5 +1,6 @@
 package command;
 
+import exception.InvalidFilterException;
 import exception.InvalidIndexException;
 import exception.MissingArgumentException;
 import exception.SKUNotFoundException;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  * Handles all task-level commands: adding, editing, deleting,
  * marking, and unmarking tasks within SKUs.
  */
-//@@author omcodedthis
+// @@author omcodedthis
 public class TaskCommandHandler {
     private static final Logger LOGGER = Logger.getLogger(TaskCommandHandler.class.getName());
     private final SKUList skuList;
@@ -42,12 +43,19 @@ public class TaskCommandHandler {
     /**
      * Handles the addition of a new task to a specific SKU.
      *
-     * @param cmd The parsed command containing the SKU ID, due date, and optionally the priority and description.
-     * @throws MissingArgumentException If the required SKU ID or due date arguments are missing.
-     * @throws SKUNotFoundException     If the target SKU cannot be found in the warehouse.
+     * @param cmd The parsed command containing the SKU ID, due date, and optionally
+     *            the priority and description.
+     * @throws MissingArgumentException If the required SKU ID or due date arguments
+     *                                  are missing.
+     * @throws SKUNotFoundException     If the target SKU cannot be found in the
+     *                                  warehouse.
+     * @throws InvalidFilterException   If an unrecognized flag is detected.
      */
-    public void handleAddSkuTask(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException {
+    public void handleAddSkuTask(ParsedCommand cmd) throws MissingArgumentException, SKUNotFoundException,
+            InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "d", "p", "t");
 
         String skuId = cmd.getArg("n");
         String dueDate = cmd.getArg("d");
@@ -89,16 +97,24 @@ public class TaskCommandHandler {
         }
     }
 
-    //@@author AkshayPranav19
+    // @@author AkshayPranav19
     /**
-     * Handles editing an existing task's properties (due date, priority, or description).
+     * Handles editing an existing task's properties (due date, priority, or
+     * description).
      *
-     * @param cmd The parsed command containing the SKU ID, task index, and at least one property to update.
-     * @throws InvalidIndexException If the provided task index is out of bounds or invalid.
-     * @throws SKUNotFoundException  If the target SKU cannot be found in the warehouse.
+     * @param cmd The parsed command containing the SKU ID, task index, and at least
+     *            one property to update.
+     * @throws InvalidIndexException  If the provided task index is out of bounds or
+     *                                invalid.
+     * @throws SKUNotFoundException   If the target SKU cannot be found in the
+     *                                warehouse.
+     * @throws InvalidFilterException If an unrecognized flag is detected.
      */
-    public void handleEditTask(ParsedCommand cmd) throws InvalidIndexException, SKUNotFoundException {
+    public void handleEditTask(ParsedCommand cmd) throws InvalidIndexException, SKUNotFoundException,
+            InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "i", "d", "p", "t");
 
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -161,18 +177,25 @@ public class TaskCommandHandler {
         }
     }
 
-    //@@author omcodedthis
+    // @@author omcodedthis
     /**
      * Handles the deletion of a specific task from a SKU.
      *
-     * @param cmd The parsed command containing the SKU ID and the index of the task to delete.
-     * @throws InvalidIndexException    If the provided task index is out of bounds or invalid.
-     * @throws SKUNotFoundException     If the target SKU cannot be found in the warehouse.
-     * @throws MissingArgumentException If the required SKU ID or task index arguments are missing.
+     * @param cmd The parsed command containing the SKU ID and the index of the task
+     *            to delete.
+     * @throws InvalidIndexException    If the provided task index is out of bounds
+     *                                  or invalid.
+     * @throws SKUNotFoundException     If the target SKU cannot be found in the
+     *                                  warehouse.
+     * @throws MissingArgumentException If the required SKU ID or task index
+     *                                  arguments are missing.
+     * @throws InvalidFilterException   If an unrecognized flag is detected.
      */
     public void handleDeleteTask(ParsedCommand cmd) throws InvalidIndexException, SKUNotFoundException,
-            MissingArgumentException {
+            MissingArgumentException, InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "i");
 
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -182,9 +205,6 @@ public class TaskCommandHandler {
         }
 
         int index = CommandHelper.parseIndex(indexStr);
-        if (index == -1) {
-            return;
-        }
 
         SKU targetSku = skuList.findByID(skuId);
         if (targetSku == null) {
@@ -203,16 +223,23 @@ public class TaskCommandHandler {
         Ui.printSuccess("Deleted task #" + index + " from SKU [" + skuId.toUpperCase() + "].");
     }
 
-    //@@author AkshayPranav19
+    // @@author AkshayPranav19
     /**
      * Handles marking a specific task as completed.
      *
-     * @param cmd The parsed command containing the SKU ID and the index of the task to mark.
-     * @throws MissingArgumentException If the required SKU ID or task index arguments are missing.
-     * @throws InvalidIndexException    If the provided task index is out of bounds or invalid.
+     * @param cmd The parsed command containing the SKU ID and the index of the task
+     *            to mark.
+     * @throws MissingArgumentException If the required SKU ID or task index
+     *                                  arguments are missing.
+     * @throws InvalidIndexException    If the provided task index is out of bounds
+     *                                  or invalid.
+     * @throws InvalidFilterException   If an unrecognized flag is detected.
      */
-    public void handleMarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException {
+    public void handleMarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException,
+            InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "i");
 
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -223,9 +250,6 @@ public class TaskCommandHandler {
         }
 
         int index = CommandHelper.parseIndex(indexStr);
-        if (index == -1) {
-            return;
-        }
 
         SKU targetSku = CommandHelper.findSkuOrError(skuList, skuId);
         if (targetSku == null) {
@@ -258,12 +282,19 @@ public class TaskCommandHandler {
     /**
      * Handles unmarking a completed task, changing its status back to incomplete.
      *
-     * @param cmd The parsed command containing the SKU ID and the index of the task to unmark.
-     * @throws MissingArgumentException If the required SKU ID or task index arguments are missing.
-     * @throws InvalidIndexException    If the provided task index is out of bounds or invalid.
+     * @param cmd The parsed command containing the SKU ID and the index of the task
+     *            to unmark.
+     * @throws MissingArgumentException If the required SKU ID or task index
+     *                                  arguments are missing.
+     * @throws InvalidIndexException    If the provided task index is out of bounds
+     *                                  or invalid.
+     * @throws InvalidFilterException   If an unrecognized flag is detected.
      */
-    public void handleUnmarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException {
+    public void handleUnmarkTask(ParsedCommand cmd) throws MissingArgumentException, InvalidIndexException,
+            InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "i");
 
         String skuId = cmd.getArg("n");
         String indexStr = cmd.getArg("i");
@@ -274,9 +305,6 @@ public class TaskCommandHandler {
         }
 
         int index = CommandHelper.parseIndex(indexStr);
-        if (index == -1) {
-            return;
-        }
 
         SKU targetSku = CommandHelper.findSkuOrError(skuList, skuId);
         if (targetSku == null) {
@@ -306,18 +334,21 @@ public class TaskCommandHandler {
         }
     }
 
-
     /**
      * Sorts tasks for a specific SKU by the given field in the specified order.
      * Supported sort fields: date, priority, status.
      * Default sort order is ascending if not specified.
      *
-     * @param cmd The parsed command containing SKU ID, sort field, and optional order.
-     * @throws SKUNotFoundException If the specified SKU does not exist.
+     * @param cmd The parsed command containing SKU ID, sort field, and optional
+     *            order.
+     * @throws SKUNotFoundException   If the specified SKU does not exist.
+     * @throws InvalidFilterException If an unrecognized flag is detected.
      */
-    //@@author AkshayPranav19
-    public void handleSortTask(ParsedCommand cmd) throws SKUNotFoundException {
+    // @@author AkshayPranav19
+    public void handleSortTask(ParsedCommand cmd) throws SKUNotFoundException, InvalidFilterException {
         assert cmd != null : "Internal Error: ParsedCommand cannot be null";
+
+        CommandHelper.validateFlags(cmd, "n", "s", "o");
 
         String skuId = cmd.getArg("n");
         String sortField = cmd.getArg("s");

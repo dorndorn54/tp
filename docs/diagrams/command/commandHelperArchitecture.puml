@@ -4,6 +4,7 @@ skinparam arrowThickness 1.1
 skinparam classAttributeIconSize 0
 
 class CommandHelper LOGIC_COLOR_T1 {
+    + {static} validateFlags(cmd : ParsedCommand, allowedFlags : String...) : void
     + {static} findSkuOrError(skuList : SKUList, skuId : String) : SKU
     + {static} parseLocation(locationStr : String) : Location
     + {static} parsePriority(priorityStr : String) : Priority
