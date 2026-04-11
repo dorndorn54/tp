@@ -2,12 +2,17 @@ package storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import sku.SKU;
 import sku.SKUList;
+import skutask.SKUTask;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Handles persistent storage of the warehouse state by serializing and
@@ -59,12 +64,45 @@ public class Storage {
             SKUList loadedSkus = gson.fromJson(reader, SKUList.class);
 
             if (loadedSkus != null) {
+                if (isCorrupted(loadedSkus)) {
+                    System.out.println("[WARNING] Corrupted or outdated JSON format detected. "
+                            + "Starting with an empty warehouse.");
+                    return;
+                }
                 skuList.getSKUList().addAll(loadedSkus.getSKUList());
             }
         } catch (IOException e) {
             System.out.println("[ERROR] Error loading: " + e.getMessage());
         } catch (com.google.gson.JsonSyntaxException e) {
-            System.out.println("[ERROR] Corrupted or outdated JSON format. Please delete!" + FILE_PATH);
+            System.out.println("[WARNING] Corrupted or outdated JSON format. Please delete! " + FILE_PATH);
         }
+    }
+
+    /**
+     * Checks whether the loaded SKUList contains any corrupted data,
+     * such as SKUs with a null location or tasks with an invalid date format.
+     *
+     * @param loadedSkus The deserialized SKUList to validate.
+     * @return True if any corruption is detected, false otherwise.
+     */
+    private static boolean isCorrupted(SKUList loadedSkus) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (SKU sku : loadedSkus.getSKUList()) {
+            if (sku.getSKULocation() == null) {
+                return true;
+            }
+            for (SKUTask task : sku.getSKUTaskList().getSKUTaskList()) {
+                String dueDate = task.getSKUTaskDueDate();
+                if (dueDate == null) {
+                    return true;
+                }
+                try {
+                    LocalDate.parse(dueDate, formatter);
+                } catch (DateTimeParseException e) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

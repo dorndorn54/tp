@@ -108,7 +108,7 @@ public class CommandRunner {
             try {
                 Storage.saveState(this.skuList);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Ui.printError("Failed to save data: " + e.getMessage());
             }
             Ui.printGoodbye();
             isRunning = false;

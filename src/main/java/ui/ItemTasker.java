@@ -4,6 +4,7 @@ import command.CommandRunner;
 import command.ParsedCommand;
 import exception.ItemTaskerException;
 import sku.SKUList;
+import storage.Storage;
 
 import java.io.IOException;
 
@@ -26,6 +27,16 @@ public class ItemTasker {
         SKUList skuList = new SKUList();
         Ui ui = new Ui();
         CommandRunner runner = new CommandRunner(skuList);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (runner.isRunning()) {
+                try {
+                    Storage.saveState(skuList);
+                } catch (IOException e) {
+                    System.out.println("[ERROR] Failed to save data on exit: " + e.getMessage());
+                }
+            }
+        }));
 
         Ui.printWelcome();
 
