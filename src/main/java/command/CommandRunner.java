@@ -52,9 +52,8 @@ public class CommandRunner {
      *
      * @param cmd The parsed command object containing the command word and extracted arguments.
      * @throws ItemTaskerException If a domain-specific error occurs during execution.
-     * @throws IOException         If an error occurs during state saving upon exit.
      */
-    public void run(ParsedCommand cmd) throws ItemTaskerException, IOException {
+    public void run(ParsedCommand cmd) throws ItemTaskerException {
         assert cmd != null : "ParsedCommand should not be null";
 
         switch (cmd.getCommandWord()) {

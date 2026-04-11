@@ -4,13 +4,13 @@
 
 ItemTasker is a desktop Command Line Interface
 (CLI) application designed for warehouse inventory management.
-It lets warehouse operators efficiently track Stock Keeping 
+It lets warehouse operators efficiently track Stock Keeping
 Units (SKUs) and their associated maintenance
 or operational tasks — all from the keyboard, with no GUI overhead.
-Built with Java 17, ItemTasker follows a clean layered 
-architecture (UI → Logic → Model → Storage) and models a 3×3 warehouse grid. 
+Built with Java 17, ItemTasker follows a clean layered
+architecture (UI → Logic → Model → Storage) and models a 3×3 warehouse grid.
 Each SKU maps to a physical grid location (A1–C3) and carries its own task list,
-where every task can be assigned a due date, a priority level 
+where every task can be assigned a due date, a priority level
 (HIGH / MEDIUM / LOW), and a description.
 The application persists all state to JSON automatically on exit
 and reloads it seamlessly on the next launch.
@@ -36,7 +36,7 @@ If the setup is correct, you should see the welcome message appear in a few seco
     * `marktask n/PALLET-A i/1` : Marks the 1st task of `PALLET-A` as completed.
     * `deletesku n/PALLET-A` : Deletes `PALLET-A` and all its associated tasks.
     * `viewmap` : Displays the 3×3 warehouse grid with SKU locations.
-    * `bye` : Exits the application.
+    * `bye` / `exit` : Exits the application.
 
 6. Refer to the Features section below for the full details of each command.
 
@@ -94,7 +94,8 @@ Adds a new task to an existing SKU.
 Format: `addskutask n/SKU_ID d/DUE_DATE [p/PRIORITY] [t/DESCRIPTION]`
 
 * `SKU_ID` must already exist. Use `addsku` to register it first.
-* `DUE_DATE` must be in `YYYY-MM-DD` format. e.g. `2026-06-15`.
+* `DUE_DATE` must be in `YYYY-MM-DD` format, e.g. `2026-06-15`. The year must be between `1970` and `2100`.
+* Dates before today are accepted (for record-keeping of overdue work) but will print a `[WARNING]` reminder.
 * `PRIORITY` is optional and must be `HIGH`, `MEDIUM`, or `LOW`. Defaults to `HIGH` if not provided.
 * `DESCRIPTION` is optional. Leave it out to create a task with no description.
 
@@ -167,12 +168,15 @@ Example of usage:
 ---
 
 ### Sorting tasks: `sorttasks`
-Sorts a SKU's task list by a specified field.
+Sorts a SKU's task list by a specified field. The sort is persistent: subsequent `listtasks` calls will reflect the sorted order.
 
 Format: `sorttasks n/SKU_ID s/SORT_FIELD [o/ORDER]`
 
 * `SORT_FIELD` must be one of: `date`, `priority`, or `status`.
-* `ORDER` is optional and must be `ascending` or `descending`. Defaults to `ascending` if not provided.
+* `ORDER` is optional and must be exactly `ascending` or `descending` (no abbreviations). Defaults to `ascending` if not provided.
+* For `s/date`: `ascending` shows earliest date first; `descending` shows latest date first.
+* For `s/priority`: `ascending` shows HIGH → MEDIUM → LOW (highest priority first); `descending` shows LOW → MEDIUM → HIGH (lowest priority first).
+* For `s/status`: `ascending` shows incomplete tasks before completed tasks; `descending` shows completed tasks first.
 
 Example of usage:
 
@@ -274,14 +278,16 @@ Example of usage:
 
 ---
 
-### Exiting the application: `bye`
-Exits ItemTasker. All data is automatically saved before the application closes.
+### Exiting the application: `bye` / `exit`
+Exits ItemTasker. All data is automatically saved before the application closes. Both `bye` and `exit` are accepted and behave identically.
 
-Format: `bye`
+Format: `bye` or `exit`
 
 Example of usage:
 
 `bye`
+
+`exit`
 
 ## FAQ
 **Q**: How do I transfer my warehouse data to another computer?  

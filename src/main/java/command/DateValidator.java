@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 public class DateValidator {
     private static final Logger LOGGER = Logger.getLogger(DateValidator.class.getName());
     private static final Pattern DATE_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+    private static final int MIN_YEAR = 1970;
+    private static final int MAX_YEAR = 2100;
 
     /**
      * Checks whether the given string is a valid date in YYYY-MM-DD format.
@@ -45,12 +47,15 @@ public class DateValidator {
     /**
      * Validates a date string and prints an error if invalid.
      * Returns the trimmed date on success, or null on failure.
+     * Only years between 1970 and 2100 are accepted; dates before the current
+     * system date are accepted but trigger a non-blocking warning.
      *
      * @param dateStr The raw date string from user input.
      * @return The validated and trimmed date string, or null if invalid.
      */
     public static String validateDateOrError(String dateStr) {
         assert dateStr != null : "Date string should not be null at this point";
+        assert MIN_YEAR <= MAX_YEAR : "Year range invariant violated: MIN_YEAR must be <= MAX_YEAR";
 
         String trimmed = dateStr.trim();
 
@@ -60,14 +65,34 @@ public class DateValidator {
             return null;
         }
 
+        LocalDate parsed;
         try {
-            LocalDate.parse(trimmed);
-            LOGGER.log(Level.FINE, "Date validated successfully: " + trimmed);
-            return trimmed;
+            parsed = LocalDate.parse(trimmed);
         } catch (DateTimeParseException e) {
             LOGGER.log(Level.WARNING, "Impossible calendar date: " + dateStr, e);
             Ui.printError("Invalid date '" + dateStr + "'. Date does not exist on the calendar.");
             return null;
         }
+        assert parsed != null : "LocalDate.parse returned null after successful parse";
+
+        int year = parsed.getYear();
+        if (year < MIN_YEAR || year > MAX_YEAR) {
+            LOGGER.log(Level.WARNING, "Date year " + year + " outside accepted range ["
+                    + MIN_YEAR + ", " + MAX_YEAR + "]: " + dateStr);
+            Ui.printError("Invalid year '" + year + "' in date '" + dateStr
+                    + "'. Year must be between " + MIN_YEAR + " and " + MAX_YEAR + ".");
+            return null;
+        }
+
+        LocalDate today = LocalDate.now();
+        assert today != null : "LocalDate.now() must never return null";
+        if (parsed.isBefore(today)) {
+            LOGGER.log(Level.INFO, "Past due date accepted with warning: " + trimmed);
+            Ui.printWarning("Due date '" + trimmed + "' is in the past (today is "
+                    + today + "). Task will still be added.");
+        }
+
+        LOGGER.log(Level.FINE, "Date validated successfully: " + trimmed);
+        return trimmed;
     }
 }

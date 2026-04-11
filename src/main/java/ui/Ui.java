@@ -15,7 +15,8 @@ import java.util.Scanner;
 //@@author dorndorn54
 public class Ui {
 
-    private static final String DIVIDER = "__________________________________________________________________________";
+    private static final String DIVIDER = "__________________________________________________"
+            + "__________________________________________________";
     private static final String LOGO = "  ___  _                   _____            _                 \n"
             + " |_ _|| |_  ___  _ __ ___  |_   _|__ _  ___ | | __ ___  _ __  \n"
             + "  | | | __|/ _ \\| '_ ` _ \\   | | / _` |/ __|| |/ // _ \\| '__| \n"
@@ -38,7 +39,9 @@ public class Ui {
         return scanner.nextLine().trim();
     }
 
-    /** Prints the welcome banner on application startup. */
+    /**
+     * Prints the welcome banner on application startup.
+     */
     public static void printWelcome() {
         System.out.println(DIVIDER);
         System.out.println(LOGO);
@@ -47,7 +50,9 @@ public class Ui {
         System.out.println(DIVIDER);
     }
 
-    /** Prints the goodbye message on application exit. */
+    /**
+     * Prints the goodbye message on application exit.
+     */
     public static void printGoodbye() {
         System.out.println(DIVIDER);
         System.out.println(" Goodbye! All tasks have been saved.");
@@ -90,46 +95,66 @@ public class Ui {
         System.out.println(" [ERROR] Unknown command: '" + command + "'. Type 'help' for valid commands.");
     }
 
-    /** Prints the help reference listing all valid commands and their formats. */
+    /**
+     * Prints the help reference listing all valid commands and their formats.
+     */
     public static void printHelp() {
         System.out.println(DIVIDER);
         System.out.println(" ITEMTASKER - COMMAND REFERENCE");
         System.out.println(DIVIDER);
         System.out.println(" SKU MANAGEMENT");
-        System.out.println("   addsku n/SKU_ID l/LOCATION          Add a SKU to the warehouse.");
-        System.out.println("   editsku n/SKU_ID l/NEW_LOCATION     Move a SKU to a new warehouse location.");
-        System.out.println("   deletesku n/SKU_ID                  Remove a SKU and all its tasks.");
+        System.out.println("   addsku n/SKU_ID l/LOC                                  "
+                + "Add a SKU to the warehouse.");
+        System.out.println("   editsku n/SKU_ID l/NEW_LOC                             "
+                + "Move a SKU to a new location.");
+        System.out.println("   deletesku n/SKU_ID                                     "
+                + "Remove a SKU and all its tasks.");
         System.out.println();
         System.out.println(" TASK MANAGEMENT");
-        System.out.println("   addskutask n/SKU_ID d/DUE_DATE      Add a HIGH priority task (default).");
-        System.out.println("         [p/PRIORITY] [t/DESC]         Optional: priority and description.");
-        System.out.println("   edittask n/SKU_ID i/TASK_INDEX      Edit a task's due date, priority, or description.");
-        System.out.println("    [d/DUE_DATE] [p/PRIORITY] [t/DESC] Note: At least one field required.");
-        System.out.println("   deletetask n/SKU_ID i/TASK_INDEX    Delete task at given index.");
-        System.out.println("   marktask n/SKU_ID i/TASK_INDEX      Mark a task as completed.");
-        System.out.println("   unmarktask n/SKU_ID i/TASK_INDEX    Unmark a completed task.");
-        System.out.println("   sorttasks n/SKU_ID s/SORT_BY        Sort tasks within a SKU (date|priority|status).");
-        System.out.println("         [o/ORDER]                     Optional: ascending (default) or descending.");
+        System.out.println("   addskutask n/SKU_ID d/DUE_DATE [p/PRIO] [t/DESC]       "
+                + "Add a task (priority/desc optional).");
+        System.out.println("   edittask n/SKU_ID i/IDX [d/DATE] [p/PRIO] [t/DESC]     "
+                + "Edit a task (at least 1 field req).");
+        System.out.println("   deletetask n/SKU_ID i/IDX                              "
+                + "Delete task at given index.");
+        System.out.println("   marktask n/SKU_ID i/IDX                                "
+                + "Mark a task as completed.");
+        System.out.println("   unmarktask n/SKU_ID i/IDX                              "
+                + "Unmark a completed task.");
+        System.out.println("   sorttasks n/SKU_ID s/SORT_BY [o/ORDER]                 "
+                + "Sort tasks by date|priority|status.");
         System.out.println();
         System.out.println(" VIEWING");
-        System.out.println("   listtasks                           List all tasks.");
-        System.out.println("   listtasks n/SKU_ID                  List tasks for a specific SKU.");
-        System.out.println("   listtasks p/PRIORITY                List tasks filtered by priority.");
-        System.out.println("   listtasks l/LOCATION                List tasks sorted by distance.");
-        System.out.println("   find [n/SKU_ID] [t/DESC] [i/INDEX]  Search tasks by SKU, description, index.");
-        System.out.println("   viewmap                             Show warehouse map.");
-        System.out.println("   status [n/SKU_ID]                   Show completion status for SKU(s).");
+        System.out.println("   listtasks                                              "
+                + "List all tasks.");
+        System.out.println("   listtasks n/SKU_ID                                     "
+                + "List tasks for a specific SKU.");
+        System.out.println("   listtasks p/PRIORITY                                   "
+                + "List tasks filtered by priority.");
+        System.out.println("   listtasks l/LOCATION                                   "
+                + "List tasks sorted by distance.");
+        System.out.println("   find [n/SKU_ID] [t/DESC] [i/IDX]                       "
+                + "Search tasks by SKU, description, index.");
+        System.out.println("   viewmap                                                "
+                + "Show warehouse map.");
+        System.out.println("   status [n/SKU_ID]                                      "
+                + "Show completion status for SKU(s).");
         System.out.println();
         System.out.println(" OTHER");
-        System.out.println("   export                             Export inventory to a readable text file.");
-        System.out.println("   help                               Show this help message.");
-        System.out.println("   bye / exit                         Exit ItemTasker.");
+        System.out.println("   export                                                 "
+                + "Export inventory to a text file.");
+        System.out.println("   help                                                   "
+                + "Show this help message.");
+        System.out.println("   bye / exit                                             "
+                + "Exit ItemTasker.");
         System.out.println(DIVIDER);
         System.out.println(" Locations: A1 A2 A3 | B1 B2 B3 | C1 C2 C3  (3x3 warehouse grid)");
         System.out.println(DIVIDER);
     }
 
-    /** Prints the horizontal divider line. */
+    /**
+     * Prints the horizontal divider line.
+     */
     public static void printDivider() {
         System.out.println(DIVIDER);
     }
@@ -153,7 +178,7 @@ public class Ui {
      * Prints tasks filtered by a specific priority level.
      *
      * @param priority The priority level used as a filter.
-     * @param tasks    The filtered list of tasks to display.
+     * @param tasks The filtered list of tasks to display.
      */
     public static void printTasksByPriority(String priority, List<SKUTask> tasks) {
         System.out.println(" Tasks with priority [" + priority.toUpperCase() + "]:");
@@ -171,7 +196,7 @@ public class Ui {
     /**
      * Prints tasks sorted by distance from a given location.
      *
-     * @param fromLocation     The reference location name.
+     * @param fromLocation The reference location name.
      * @param formattedEntries Pre-formatted distance entry strings.
      */
     public static void printTasksByDistance(String fromLocation, List<String> formattedEntries) {
@@ -240,6 +265,16 @@ public class Ui {
     }
 
     //@@author AkshayPranav19
+
+    /**
+     * Prints a non-blocking warning message prefixed with [WARNING].
+     *
+     * @param message Warning detail message.
+     */
+    public static void printWarning(String message) {
+        System.out.println(" [WARNING] " + message);
+    }
+
     /**
      * Prints a sorted list of tasks for a specific SKU.
      *
@@ -262,6 +297,7 @@ public class Ui {
     }
 
     //@@author SeanTLY23
+
     /**
      * Prints a detailed status breakdown for a single SKU.
      *

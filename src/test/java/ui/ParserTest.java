@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ParserTest {
@@ -171,6 +172,16 @@ class ParserTest {
         assertNotNull(Parser.parse("help"));
         assertNotNull(Parser.parse("bye"));
         assertNotNull(Parser.parse(""));
+    }
+
+    // -----------------------------------------------------------------------
+    // Duplicate flags
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void parse_duplicateFlag_throwsInvalidCommandException() {
+        assertThrows(InvalidCommandException.class,
+                () -> Parser.parse("addsku n/FIRST n/SECOND l/A1"));
     }
 
     // -----------------------------------------------------------------------

@@ -59,6 +59,10 @@ public class Parser {
             if (slashIdx > 0) {
                 String key = token.substring(0, slashIdx).trim().toLowerCase();
                 String value = token.substring(slashIdx + 1).trim();
+                if (args.containsKey(key)) {
+                    throw new InvalidCommandException(
+                            "Duplicate flag '" + key + "/' is not allowed.");
+                }
                 args.put(key, value);
             }
         }

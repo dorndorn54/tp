@@ -48,6 +48,13 @@ public class SKUCommandHandler {
             throw new MissingArgumentException("Usage: addsku n/SKU_ID l/LOCATION  (e.g. addsku n/WIDGET-A1 l/B2)");
         }
 
+        skuId = skuId.trim().toUpperCase();
+
+        if (!skuId.matches("^[A-Z0-9\\-]+$")) {
+            Ui.printError("Invalid SKU ID format. SKU IDs must only contain letters, numbers, and hyphens.");
+            return;
+        }
+
         Location location = CommandHelper.parseLocation(locationStr);
         if (location == null) {
             return;

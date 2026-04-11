@@ -75,7 +75,7 @@ tracker.
 ### Contributions Beyond the Project Team
 
 * **Peer Quality Assurance (PE-D):** Systematically tested a peer team's application during the Practical Exam Dry Run,
-  identifying and documenting critical functionality flaws and documentation bugs to assist their final v2.1 release.
+  (in top 10%) identifying critical functionality flaws and documentation bugs to assist their final v2.1 release.
 
 <div style="page-break-after: always;"></div>
 
