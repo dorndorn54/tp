@@ -1,127 +1,50 @@
-@startuml
-skinparam classAttributeIconSize 0
+@startuml Architecture
 skinparam shadowing false
 skinparam monochrome true
-skinparam nodesep 25
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam nodesep 50
 skinparam ranksep 40
-hide circle
+skinparam packagePadding 20
 
-class ItemTasker {
-  + main(args: String[]): void
+package "UI Layer" {
+    rectangle "Ui" as Ui
+    rectangle "ItemTasker" as App
+    rectangle "Parser" as Parser
 }
 
-class Parser {
-  + {static} parse(input): ParsedCommand
+package "Logic Layer" {
+    rectangle "CommandRunner" as CR
+    rectangle "SKUCommandHandler" as SCH
+    rectangle "TaskCommandHandler" as TCH
+    rectangle "ViewCommandHandler" as VCH
 }
 
-class Ui {
-  + readInput(): String
+package "Storage Layer" {
+    rectangle "Storage" as Storage
+    rectangle "Export" as Export
 }
 
-class CommandRunner {
-  + run(cmd: ParsedCommand): void
-  + isRunning(): boolean
+package "SKU Model" {
+    rectangle "SKUList" as Model
 }
 
-class SKUCommandHandler {
-  + handleAddSku(cmd): void
-  + handleEditSku(cmd): void
-  + handleDeleteSku(cmd): void
-}
+App -left-> Ui
+App -right-> Parser
+App -down-> CR
 
-class TaskCommandHandler {
-  + handleAddSkuTask(cmd): void
-  + handleEditTask(cmd): void
-  + handleDeleteTask(cmd): void
-  + handleMarkTask(cmd): void
-  + handleUnmarkTask(cmd): void
-  + handleSortTask(cmd): void
-}
+CR -down-> SCH
+CR -down-> TCH
+CR -down-> VCH
 
-class ViewCommandHandler {
-  + handleListTasks(cmd): void
-  + handleFind(cmd): void
-  + handleStatus(cmd): void
-}
+CR -right-> Storage
+CR ..> Export
 
-class CommandHelper {
-  + {static} findSkuOrError(skuList, id): SKU
-  + {static} parseLocation(str): Location
-  + {static} parsePriority(str): Priority
-  + {static} parseIndex(str): int
-}
+SCH -down-> Model
+TCH -down-> Model
+VCH -down-> Model
 
-class DateValidator {
-  + {static} isValidDate(str): boolean
-  + {static} validateDateOrError(str): String
-}
-
-class TaskSorter {
-  + getSortedTasks(): List<SKUTask>
-  + {static} isValidSortField(field): boolean
-}
-
-class SKUList {
-  + addSKU(id, loc): void
-  + deleteSKU(id): void
-  + findByID(id): SKU
-}
-
-class SKU {
-  - skuID: String
-  - skuLocation: Location
-}
-
-class SKUTaskList {
-  + editSKUTask(...): void
-  + markTask(index): void
-  + unmarkTask(index): void
-}
-
-class SKUTask {
-  - priority: Priority
-  - dueDate: String
-  - isDone: boolean
-}
-
-class Storage {
-  + {static} saveState(skuList): void
-  + {static} loadState(skuList): void
-}
-
-class Export {
-  + {static} exportToTextFile(skuList): void
-}
-
-' -- UI layer --
-ItemTasker -down-> CommandRunner
-ItemTasker -right-> Ui
-ItemTasker ..> Parser
-
-' -- Logic layer --
-CommandRunner -down-> SKUCommandHandler
-CommandRunner -down-> TaskCommandHandler
-CommandRunner -down-> ViewCommandHandler
-CommandRunner ..> Storage
-CommandRunner ..> Export
-
-' -- Shared utilities --
-SKUCommandHandler ..> CommandHelper
-TaskCommandHandler ..> CommandHelper
-ViewCommandHandler ..> CommandHelper
-TaskCommandHandler ..> DateValidator
-TaskCommandHandler ..> TaskSorter
-
-' -- All handlers to model --
-SKUCommandHandler -down-> SKUList
-TaskCommandHandler -down-> SKUList
-ViewCommandHandler -down-> SKUList
-Export ..> SKUList
-
-
-' -- Model layer --
-SKUList -down-> "*" SKU
-SKU -down-> "1" SKUTaskList
-SKUTaskList -down-> "*" SKUTask
+Storage ..> Model
+Export ..> Model
 
 @enduml
