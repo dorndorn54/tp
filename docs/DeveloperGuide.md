@@ -14,28 +14,26 @@ We also acknowledge the following for their contributions to our development pro
 
 ItemTasker follows a layered architecture with clear separation of concerns:
 
+
 ![Architecture Diagram](diagrams/architecture.png)
 
 **Component Relationships:**
 
 The diagram shows the main components and their relationships:
 
+- **ItemTasker** is the main entry point that orchestrates the application loop
 - **Ui** handles all user interface interactions
 - **Parser** transforms raw input into structured `ParsedCommand` objects
 - **CommandRunner** dispatches commands to the appropriate handler
 - **SKUCommandHandler** manages SKU-level commands (`addsku`, `editsku`, `deletesku`)
 - **TaskCommandHandler** manages task-level commands (`addskutask`, `edittask`, `deletetask`, `marktask`, `unmarktask`, `sorttasks`)
 - **ViewCommandHandler** manages read-only commands (`listtasks`, `find`, `status`)
-- **CommandHelper** and **DateValidator** provide shared validation utilities
-- **TaskSorter** sorts tasks by date, priority, or completion status
-- **SKUList** contains multiple **SKU** instances (1-to-many relationship)
-- **SKU** contains one **SKUTaskList** which holds multiple **SKUTask** instances (1-to-many relationship)
+- **SKUList** stores and manages all SKU objects in the warehouse
 - **Storage** handles JSON persistence of the warehouse state
 - **Export** writes a human-readable inventory snapshot to a text file
 
 *Note: Solid arrows (→) indicate direct dependencies or composition.
 Dashed arrows (- ->) indicate utility dependencies (e.g. static helper calls).
-The "*" multiplicity on model relationships denotes one-to-many.*
 
 **Key Design Principles:**
 
